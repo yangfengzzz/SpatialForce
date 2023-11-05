@@ -41,4 +41,4 @@ if (CUDA_FOUND)
 endif ()
 
 # Add third party libraries
-# add_subdirectory(third_party)
+ add_subdirectory(core)
