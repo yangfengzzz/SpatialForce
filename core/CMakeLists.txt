@@ -9,8 +9,24 @@ cmake_minimum_required(VERSION 3.16)
 project(core LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
+        crt.h
+        crt.cpp
         builtin.h
-        tmp.cu
+        initializer_array.h
+        vec.h
+        mat.h
+        quat.h
+        array.h
+        fabric.h
+        spatial.h
+        rand.h
+        noise.h
+        range.h
+        solid_angle.h
+        intersect.h
+        intersect_tri.h
+        svd.h
+        matnn.h
 )
 
 source_group("common\\" FILES ${COMMON_FILES})

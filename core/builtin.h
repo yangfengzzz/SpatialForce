@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "crt.h"
+
 #ifdef _WIN32
 #define __restrict__ __restrict
 #endif
@@ -131,19 +133,6 @@ CUDA_CALLABLE inline float half_to_float(half x) {
     float val;
     asm("{  cvt.f32.f16 %0, %1;}\n" : "=f"(val) : "h"(x.u));
     return val;
-}
-
-#elif defined(__clang__)
-
-// _Float16 is Clang's native half-precision floating-point type
-inline half float_to_half(float x) {
-    _Float16 f16 = static_cast<_Float16>(x);
-    return *reinterpret_cast<half *>(&f16);
-}
-
-inline float half_to_float(half h) {
-    _Float16 f16 = *reinterpret_cast<_Float16 *>(&h);
-    return static_cast<float>(f16);
 }
 
 #else  // Native C++ for Warp builtins outside of kernels
@@ -850,7 +839,7 @@ inline CUDA_CALLABLE float tensordot(float a, float b) { return mul(a, b); }
         x = clamp((x - edge0) / (edge1 - edge0), T(0), T(1));  \
         return x * x * (T(3) - T(2) * x);                      \
     }                                                          \
-    \ CUDA_CALLABLE inline T lerp(const T &a, const T &b, T t) { return a * (T(1) - t) + b * t; }
+    CUDA_CALLABLE inline T lerp(const T &a, const T &b, T t) { return a * (T(1) - t) + b * t; }
 
 DECLARE_INTERP_FUNCS(float16)
 DECLARE_INTERP_FUNCS(float32)
@@ -873,35 +862,6 @@ inline CUDA_CALLABLE void print(unsigned short i) { printf("%hu\n", i); }
 inline CUDA_CALLABLE void print(unsigned long i) { printf("%lu\n", i); }
 
 inline CUDA_CALLABLE void print(unsigned long long i) { printf("%llu\n", i); }
-
-template <unsigned Length, typename Type>
-inline CUDA_CALLABLE void print(vec_t<Length, Type> v) {
-    for (unsigned i = 0; i < Length; ++i) {
-        printf("%g ", float(v[i]));
-    }
-    printf("\n");
-}
-
-template <typename Type>
-inline CUDA_CALLABLE void print(quat_t<Type> i) {
-    printf("%g %g %g %g\n", float(i.x), float(i.y), float(i.z), float(i.w));
-}
-
-template <unsigned Rows, unsigned Cols, typename Type>
-inline CUDA_CALLABLE void print(const mat_t<Rows, Cols, Type> &m) {
-    for (unsigned i = 0; i < Rows; ++i) {
-        for (unsigned j = 0; j < Cols; ++j) {
-            printf("%g ", float(m.data[i][j]));
-        }
-        printf("\n");
-    }
-}
-
-template <typename Type>
-inline CUDA_CALLABLE void print(transform_t<Type> t) {
-    printf("(%g %g %g) (%g %g %g %g)\n", float(t.p[0]), float(t.p[1]), float(t.p[2]), float(t.q.x), float(t.q.y),
-           float(t.q.z), float(t.q.w));
-}
 
 template <typename T>
 inline CUDA_CALLABLE void expect_eq(const T &actual, const T &expected) {
@@ -928,19 +888,6 @@ inline CUDA_CALLABLE void expect_neq(const T &actual, const T &expected) {
 template <typename T>
 inline CUDA_CALLABLE void expect_near(const T &actual, const T &expected, const T &tolerance) {
     if (abs(actual - expected) > tolerance) {
-        printf("Error, expect_near() failed with tolerance ");
-        print(tolerance);
-        printf("\t Expected: ");
-        print(expected);
-        printf("\t Actual: ");
-        print(actual);
-    }
-}
-
-inline CUDA_CALLABLE void expect_near(const vec3 &actual, const vec3 &expected, const float &tolerance) {
-    const float diff =
-            max(max(abs(actual[0] - expected[0]), abs(actual[1] - expected[1])), abs(actual[2] - expected[2]));
-    if (diff > tolerance) {
         printf("Error, expect_near() failed with tolerance ");
         print(tolerance);
         printf("\t Expected: ");
