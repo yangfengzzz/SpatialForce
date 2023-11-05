@@ -736,7 +736,7 @@ using mat33d = mat_t<3, 3, double>;
 using mat44d = mat_t<4, 4, double>;
 
 template <unsigned Rows, unsigned Cols, typename Type>
-inline CUDA_CALLABLE void print(const mat_t<Rows, Cols, Type> &m) {
+inline CUDA_CALLABLE void print(const mat_t<Rows, Cols, Type>& m) {
     for (unsigned i = 0; i < Rows; ++i) {
         for (unsigned j = 0; j < Cols; ++j) {
             printf("%g ", float(m.data[i][j]));

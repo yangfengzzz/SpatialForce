@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "vec.h"
+#include "bounds.h"
 
 // This code is adapted from https://github.com/alecjacobson/WindingNumber/tree/1e6081e52905575d8e98fb8b7c0921274a18752f
 // The original license is below:

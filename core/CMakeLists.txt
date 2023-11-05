@@ -27,12 +27,18 @@ set(COMMON_FILES
         intersect_tri.h
         svd.h
         matnn.h
+        #
+        hashgrid.h
+        bounds.h
+        bvh.h
+        mesh.h
 )
 
 source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
+        bounds.h
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})

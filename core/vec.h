@@ -541,7 +541,7 @@ inline CUDA_CALLABLE void print(vec_t<Length, Type> v) {
     printf("\n");
 }
 
-inline CUDA_CALLABLE void expect_near(const vec3 &actual, const vec3 &expected, const float &tolerance) {
+inline CUDA_CALLABLE void expect_near(const vec3& actual, const vec3& expected, const float& tolerance) {
     const float diff =
             max(max(abs(actual[0] - expected[0]), abs(actual[1] - expected[1])), abs(actual[2] - expected[2]));
     if (diff > tolerance) {
