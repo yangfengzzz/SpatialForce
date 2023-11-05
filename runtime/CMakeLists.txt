@@ -6,32 +6,23 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(core LANGUAGES C CXX CUDA)
+project(runtime LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
-        crt.h
-        crt.cpp
-        builtin.h
-        initializer_array.h
-        vec.h
-        mat.h
-        quat.h
-        array.h
-        fabric.h
-        spatial.h
-        rand.h
-        noise.h
-        range.h
-        solid_angle.h
-        intersect.h
-        intersect_tri.h
-        svd.h
-        matnn.h
-        #
-        hashgrid.h
-        bounds.h
-        bvh.h
-        mesh.h
+        cuda_util.h
+        cuda_util.cu
+        device.h
+        device.cu
+        context.h
+        context.cu
+        allocator.h
+        allocator.cu
+        graph.h
+        graph.cu
+        stream.h
+        stream.cu
+        event.h
+        event.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})

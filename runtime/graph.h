@@ -1,0 +1,21 @@
+//  Copyright (c) 2023 Feng Yang
+//
+//  I am making my contributions/submissions to this project solely in my
+//  personal capacity and am not conveying any rights to any intellectual
+//  property of any third parties.
+
+#pragma once
+
+namespace wp {
+class Device;
+class Graph {
+public:
+    Graph(Device &device, void *graph);
+
+    ~Graph();
+
+private:
+    void *graph_;
+    Device &device_;
+};
+}  // namespace wp
