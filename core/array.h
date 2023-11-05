@@ -150,6 +150,15 @@ struct array_t {
     int ndim;
 
     CUDA_CALLABLE inline operator T*() const { return data; }
+
+    CUDA_CALLABLE inline T &operator()(int i);
+    CUDA_CALLABLE inline const T &operator()(int i) const;
+    CUDA_CALLABLE inline T &operator()(int i, int j);
+    CUDA_CALLABLE inline const T &operator()(int i, int j) const;
+    CUDA_CALLABLE inline T &operator()(int i, int j, int k);
+    CUDA_CALLABLE inline const T &operator()(int i, int j, int k) const;
+    CUDA_CALLABLE inline T &operator()(int i, int j, int k, int l);
+    CUDA_CALLABLE inline const T &operator()(int i, int j, int k, int l) const;
 };
 
 // TODO:
@@ -226,6 +235,16 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i) {
     return result;
 }
 
+template<typename T>
+CUDA_CALLABLE inline T &array_t<T>::operator()(int i) {
+    return index(*this, i);
+}
+
+template<typename T>
+CUDA_CALLABLE inline const T &array_t<T>::operator()(int i) const {
+    return index(*this, i);
+}
+
 template <typename T>
 CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j) {
     assert(arr.ndim == 2);
@@ -233,6 +252,16 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j) {
     FP_VERIFY_FWD_2(result)
 
     return result;
+}
+
+template<typename T>
+CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j) {
+    return index(*this, i, j);
+}
+
+template<typename T>
+CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j) const {
+    return index(*this, i, j);
 }
 
 template <typename T>
@@ -244,6 +273,16 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j, int k) {
     return result;
 }
 
+template<typename T>
+CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j, int k) {
+    return index(*this, i, j, k);
+}
+
+template<typename T>
+CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j, int k) const {
+    return index(*this, i, j, k);
+}
+
 template <typename T>
 CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j, int k, int l) {
     assert(arr.ndim == 4);
@@ -251,6 +290,16 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j, int k, int l)
     FP_VERIFY_FWD_4(result)
 
     return result;
+}
+
+template<typename T>
+CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j, int k, int l) {
+    return index(*this, i, j, k, l);
+}
+
+template<typename T>
+CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j, int k, int l) const {
+    return index(*this, i, j, k, l);
 }
 
 template <typename T>

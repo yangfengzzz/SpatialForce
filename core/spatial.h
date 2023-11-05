@@ -93,6 +93,8 @@ struct transform_t {
 
         return p.c[index];
     }
+
+    CUDA_CALLABLE inline transform_t operator*=(const transform_t &h);
 };
 
 template <typename Type = float32>
@@ -177,6 +179,17 @@ CUDA_CALLABLE inline transform_t<Type> operator*(const transform_t<Type>& a, Typ
 template <typename Type>
 CUDA_CALLABLE inline transform_t<Type> operator*(Type s, const transform_t<Type>& a) {
     return mul(a, s);
+}
+
+template<typename Type>
+CUDA_CALLABLE inline transform_t<Type> operator*(const transform_t<Type> &a, const transform_t<Type> &b) {
+    return mul(a, b);
+}
+
+template<typename Type>
+CUDA_CALLABLE inline transform_t<Type> transform_t<Type>::operator*=(const transform_t &h) {
+    *this = mul(*this, h);
+    return *this;
 }
 
 template <typename Type>

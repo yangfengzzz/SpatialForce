@@ -43,3 +43,4 @@ endif ()
 # Add third party libraries
 add_subdirectory(core)
 add_subdirectory(runtime)
+add_subdirectory(rigidbody)
