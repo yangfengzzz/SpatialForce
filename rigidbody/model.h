@@ -6,15 +6,16 @@
 
 #pragma once
 
-#include "core/array.h"
-#include "core/vec.h"
-#include "core/mat.h"
-#include <vector>
+#include <array>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
-#include <string>
-#include <array>
+#include <vector>
+
+#include "core/array.h"
+#include "core/mat.h"
+#include "core/vec.h"
 
 namespace wp {
 constexpr uint32_t PARTICLE_FLAG_ACTIVE = 1 << 0;
@@ -46,11 +47,7 @@ enum class JointType {
 };
 
 // Joint axis mode types
-enum class JointMode {
-    JOINT_MODE_LIMIT,
-    JOINT_MODE_TARGET_POSITION,
-    JOINT_MODE_TARGET_VELOCITY
-};
+enum class JointMode { JOINT_MODE_LIMIT, JOINT_MODE_TARGET_POSITION, JOINT_MODE_TARGET_VELOCITY };
 
 // Material properties pertaining to rigid shape contact dynamics
 struct ModelShapeMaterials {
@@ -105,7 +102,7 @@ struct SDF {
 };
 
 // Describes a triangle collision mesh for simulation
-//struct Mesh {
+// struct Mesh {
 //    std::vector<vec3f> vertices;
 //    std::vector<int32_t> indices;
 //    bool is_solid;
@@ -139,37 +136,16 @@ struct State {
     void flatten();
 };
 
-std::tuple<float, vec3f, mat33f> compute_shape_mass(GeometryType type, float scale, float density, bool is_solid, float thickness) {
-    if (density == 0 || type == GeometryType::GEO_PLANE) {
-        return std::make_tuple(0, vec3f(), mat33f());
-    }
+std::tuple<float, vec3f, mat33f> compute_shape_mass(
+        GeometryType type, float scale, float density, bool is_solid, float thickness);
 
-    if (type == GeometryType::GEO_SPHERE) {
+std::tuple<float, vec3f, mat33f> compute_shape_mass(
+        GeometryType type, SDF &src, float scale, float density, bool is_solid, float thickness);
 
-    } else if (type == GeometryType::GEO_BOX) {
-
-    } else if (type == GeometryType::GEO_CAPSULE) {
-    } else if (type == GeometryType::GEO_CYLINDER) {
-
-    } else if (type == GeometryType::GEO_CONE) {
-    }
-
-    return std::make_tuple(0, vec3f(), mat33f());
-}
-
-std::tuple<float, vec3f, mat33f> compute_shape_mass(GeometryType type, SDF &src, float scale, float density, bool is_solid, float thickness) {
-    if (src.has_inertia && src.mass > 0 && src.is_solid == is_solid) {
-        auto m = src.mass;
-        auto c = src.com;
-        auto I = src.I;
-    }
-
-    return std::make_tuple(0, vec3f(), mat33f());
-}
-
-//std::tuple<float, vec3f, mat33f> compute_shape_mass(GeometryType type, Mesh &src, float scale, float density, bool is_solid, float thickness) {
-//    return std::make_tuple(0, vec3f(), mat33f());
-//}
+// std::tuple<float, vec3f, mat33f> compute_shape_mass(GeometryType type, Mesh &src, float scale, float density, bool
+// is_solid, float thickness) {
+//     return std::make_tuple(0, vec3f(), mat33f());
+// }
 
 // Holds the definition of the simulation model
 //
@@ -220,7 +196,7 @@ class Model {
     // Shape geometry properties (geo type, scale, thickness, etc.)
     ModelShapeGeometry shape_geo;
     // List of `wp.Mesh` instances used for rendering of mesh geometry
-//    Mesh shape_geo_src;
+    //    Mesh shape_geo_src;
 
     // Collision group of each shape
     std::vector<int> shape_collision_group;
@@ -439,4 +415,4 @@ public:
     float particle_radius();
 };
 
-}// namespace wp
+}  // namespace wp

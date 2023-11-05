@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.16)
 project(rigidbody LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
+        utils.h
         collide.h
         collide.cu
         inertia.h
@@ -23,8 +24,6 @@ set(COMMON_FILES
         optimizer.cu
         particles.h
         particles.cu
-        utils.h
-        utils.cu
         integrator_euler.h
         integrator_euler.cu
         integrator_xpbd.h
