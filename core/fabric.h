@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "array.h"
+#include "core/array.h"
 
 namespace wp {
 
@@ -19,20 +19,20 @@ struct fabricbucket_t {
 
 template <typename T>
 struct fabricarray_t {
-    CUDA_CALLABLE inline fabricarray_t() {}
+    CUDA_CALLABLE inline fabricarray_t() = default;
     CUDA_CALLABLE inline fabricarray_t(int) {}  // for backward a = 0 initialization syntax
 
     CUDA_CALLABLE inline bool empty() const { return !size; }
 
-    fabricbucket_t* buckets;  // array of fabricbucket_t on the correct device
+    fabricbucket_t* buckets{};  // array of fabricbucket_t on the correct device
 
-    size_t nbuckets;
-    size_t size;
+    size_t nbuckets{};
+    size_t size{};
 };
 
 template <typename T>
 struct indexedfabricarray_t {
-    CUDA_CALLABLE inline indexedfabricarray_t() {}
+    CUDA_CALLABLE inline indexedfabricarray_t() = default;
     CUDA_CALLABLE inline indexedfabricarray_t(int) {}  // for backward a = 0 initialization syntax
 
     CUDA_CALLABLE inline bool empty() const { return !size; }
@@ -41,8 +41,8 @@ struct indexedfabricarray_t {
 
     // TODO: we use 32-bit indices for consistency with other Warp indexed arrays,
     // but Fabric uses 64-bit indexing.
-    int* indices;
-    size_t size;
+    int* indices{};
+    size_t size{};
 };
 
 #ifndef FABRICARRAY_USE_BINARY_SEARCH
@@ -53,7 +53,7 @@ template <typename T>
 CUDA_CALLABLE inline const fabricbucket_t* fabricarray_find_bucket(const fabricarray_t<T>& fa, size_t i) {
 #if FABRICARRAY_USE_BINARY_SEARCH
     // use binary search to find the right bucket
-    const fabricbucket_t* bucket = nullptr;
+    const fabricbucket_t* bucket;
     size_t lo = 0;
     size_t hi = fa.nbuckets - 1;
     while (hi >= lo) {

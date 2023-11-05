@@ -89,10 +89,10 @@ inline CUDA_CALLABLE void print(shape_t s) {
 
 template <typename T>
 struct array_t {
-    CUDA_CALLABLE inline array_t() {}
+    CUDA_CALLABLE inline array_t() = default;
     CUDA_CALLABLE inline array_t(int) {}  // for backward a = 0 initialization syntax
 
-    CUDA_CALLABLE array_t(T* data, int size, T* grad = nullptr) : data(data), grad(grad) {
+    CUDA_CALLABLE array_t(T* data, int size) : data(data) {
         // constructor for 1d array
         shape.dims[0] = size;
         shape.dims[1] = 0;
@@ -104,7 +104,7 @@ struct array_t {
         strides[2] = 0;
         strides[3] = 0;
     }
-    CUDA_CALLABLE array_t(T* data, int dim0, int dim1, T* grad = nullptr) : data(data), grad(grad) {
+    CUDA_CALLABLE array_t(T* data, int dim0, int dim1) : data(data) {
         // constructor for 2d array
         shape.dims[0] = dim0;
         shape.dims[1] = dim1;
@@ -116,7 +116,7 @@ struct array_t {
         strides[2] = 0;
         strides[3] = 0;
     }
-    CUDA_CALLABLE array_t(T* data, int dim0, int dim1, int dim2, T* grad = nullptr) : data(data), grad(grad) {
+    CUDA_CALLABLE array_t(T* data, int dim0, int dim1, int dim2) : data(data) {
         // constructor for 3d array
         shape.dims[0] = dim0;
         shape.dims[1] = dim1;
@@ -128,7 +128,7 @@ struct array_t {
         strides[2] = sizeof(T);
         strides[3] = 0;
     }
-    CUDA_CALLABLE array_t(T* data, int dim0, int dim1, int dim2, int dim3, T* grad = nullptr) : data(data), grad(grad) {
+    CUDA_CALLABLE array_t(T* data, int dim0, int dim1, int dim2, int dim3) : data(data) {
         // constructor for 4d array
         shape.dims[0] = dim0;
         shape.dims[1] = dim1;
@@ -144,21 +144,20 @@ struct array_t {
     CUDA_CALLABLE inline bool empty() const { return !data; }
 
     T* data{nullptr};
-    T* grad{nullptr};
     shape_t shape;
-    int strides[ARRAY_MAX_DIMS];
-    int ndim;
+    int strides[ARRAY_MAX_DIMS]{};
+    int ndim{};
 
     CUDA_CALLABLE inline operator T*() const { return data; }
 
-    CUDA_CALLABLE inline T &operator()(int i);
-    CUDA_CALLABLE inline const T &operator()(int i) const;
-    CUDA_CALLABLE inline T &operator()(int i, int j);
-    CUDA_CALLABLE inline const T &operator()(int i, int j) const;
-    CUDA_CALLABLE inline T &operator()(int i, int j, int k);
-    CUDA_CALLABLE inline const T &operator()(int i, int j, int k) const;
-    CUDA_CALLABLE inline T &operator()(int i, int j, int k, int l);
-    CUDA_CALLABLE inline const T &operator()(int i, int j, int k, int l) const;
+    CUDA_CALLABLE inline T& operator()(int i);
+    CUDA_CALLABLE inline const T& operator()(int i) const;
+    CUDA_CALLABLE inline T& operator()(int i, int j);
+    CUDA_CALLABLE inline const T& operator()(int i, int j) const;
+    CUDA_CALLABLE inline T& operator()(int i, int j, int k);
+    CUDA_CALLABLE inline const T& operator()(int i, int j, int k) const;
+    CUDA_CALLABLE inline T& operator()(int i, int j, int k, int l);
+    CUDA_CALLABLE inline const T& operator()(int i, int j, int k, int l) const;
 };
 
 // TODO:
@@ -166,14 +165,14 @@ struct array_t {
 // - templated dimensionality? (also for array_t to save space when passing arrays to kernels)
 template <typename T>
 struct indexedarray_t {
-    CUDA_CALLABLE inline indexedarray_t() {}
+    CUDA_CALLABLE inline indexedarray_t() = default;
     CUDA_CALLABLE inline indexedarray_t(int) {}  // for backward a = 0 initialization syntax
 
     CUDA_CALLABLE inline bool empty() const { return !arr.data; }
 
     array_t<T> arr;
-    int* indices[ARRAY_MAX_DIMS];  // index array per dimension (can be NULL)
-    shape_t shape;                 // element count per dimension (num. indices if indexed, array dim if not)
+    int* indices[ARRAY_MAX_DIMS]{};  // index array per dimension (can be NULL)
+    shape_t shape;                   // element count per dimension (num. indices if indexed, array dim if not)
 };
 
 // return stride (in bytes) of the given index
@@ -235,13 +234,13 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i) {
     return result;
 }
 
-template<typename T>
-CUDA_CALLABLE inline T &array_t<T>::operator()(int i) {
+template <typename T>
+CUDA_CALLABLE inline T& array_t<T>::operator()(int i) {
     return index(*this, i);
 }
 
-template<typename T>
-CUDA_CALLABLE inline const T &array_t<T>::operator()(int i) const {
+template <typename T>
+CUDA_CALLABLE inline const T& array_t<T>::operator()(int i) const {
     return index(*this, i);
 }
 
@@ -254,13 +253,13 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j) {
     return result;
 }
 
-template<typename T>
-CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j) {
+template <typename T>
+CUDA_CALLABLE inline T& array_t<T>::operator()(int i, int j) {
     return index(*this, i, j);
 }
 
-template<typename T>
-CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j) const {
+template <typename T>
+CUDA_CALLABLE inline const T& array_t<T>::operator()(int i, int j) const {
     return index(*this, i, j);
 }
 
@@ -273,13 +272,13 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j, int k) {
     return result;
 }
 
-template<typename T>
-CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j, int k) {
+template <typename T>
+CUDA_CALLABLE inline T& array_t<T>::operator()(int i, int j, int k) {
     return index(*this, i, j, k);
 }
 
-template<typename T>
-CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j, int k) const {
+template <typename T>
+CUDA_CALLABLE inline const T& array_t<T>::operator()(int i, int j, int k) const {
     return index(*this, i, j, k);
 }
 
@@ -292,13 +291,13 @@ CUDA_CALLABLE inline T& index(const array_t<T>& arr, int i, int j, int k, int l)
     return result;
 }
 
-template<typename T>
-CUDA_CALLABLE inline T &array_t<T>::operator()(int i, int j, int k, int l) {
+template <typename T>
+CUDA_CALLABLE inline T& array_t<T>::operator()(int i, int j, int k, int l) {
     return index(*this, i, j, k, l);
 }
 
-template<typename T>
-CUDA_CALLABLE inline const T &array_t<T>::operator()(int i, int j, int k, int l) const {
+template <typename T>
+CUDA_CALLABLE inline const T& array_t<T>::operator()(int i, int j, int k, int l) const {
     return index(*this, i, j, k, l);
 }
 

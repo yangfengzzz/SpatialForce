@@ -18,7 +18,7 @@ inline CUDA_CALLABLE float smootherstep(float t) { return t * t * t * (t * (t * 
 
 inline CUDA_CALLABLE float smootherstep_gradient(float t) { return 30.f * t * t * (t * (t - 2.f) + 1.f); }
 
-inline CUDA_CALLABLE float smoothstep(float t) { return t * t * (3.0 - t * 2.0); }
+inline CUDA_CALLABLE float smoothstep(float t) { return t * t * (3.f - t * 2.f); }
 
 inline CUDA_CALLABLE float smoothstep_gradient(float t) { return 6.f * t * (1.f - t); }
 

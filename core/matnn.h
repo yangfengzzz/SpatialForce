@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "array.h"
+#include "core/array.h"
 
 namespace wp {
 

@@ -25,10 +25,17 @@ set(COMMON_FILES
         event.cu
 )
 
+set(TYPE_FILES
+        array.h
+        hash_grid.h
+        hash_grid.cu
+)
+
 source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
+        ${TYPE_FILES}
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})
@@ -36,7 +43,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR} .
-        ./)
+        ../)
 
 if (${NEED_LINK_ATOMIC})
     target_link_libraries(${PROJECT_NAME} PUBLIC atomic)

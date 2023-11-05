@@ -68,26 +68,26 @@ CUDA_CALLABLE inline int hash_grid_index(const HashGrid& grid, const vec3& p) {
 
 // stores state required to traverse neighboring cells of a point
 struct hash_grid_query_t {
-    CUDA_CALLABLE hash_grid_query_t() {}
+    CUDA_CALLABLE hash_grid_query_t() = default;
     CUDA_CALLABLE hash_grid_query_t(int) {}  // for backward pass
 
-    int x_start;
-    int y_start;
-    int z_start;
+    int x_start{};
+    int y_start{};
+    int z_start{};
 
-    int x_end;
-    int y_end;
-    int z_end;
+    int x_end{};
+    int y_end{};
+    int z_end{};
 
-    int x;
-    int y;
-    int z;
+    int x{};
+    int y{};
+    int z{};
 
-    int cell;
-    int cell_index;  // offset in the current cell (index into cell_indices)
-    int cell_end;    // index following the end of this cell
+    int cell{};
+    int cell_index{};  // offset in the current cell (index into cell_indices)
+    int cell_end{};    // index following the end of this cell
 
-    int current;  // index of the current iterator value
+    int current{};  // index of the current iterator value
 
     HashGrid grid;
 };
@@ -122,7 +122,7 @@ CUDA_CALLABLE inline bool hash_grid_query_next(hash_grid_query_t& query, int& in
     const HashGrid& grid = query.grid;
     if (!grid.point_cells) return false;
 
-    while (1) {
+    while (true) {
         if (query.cell_index < query.cell_end) {
             // write output index
             index = grid.point_ids[query.cell_index++];
@@ -166,7 +166,7 @@ CUDA_CALLABLE inline hash_grid_query_t iter_reverse(const hash_grid_query_t& que
 }
 
 CUDA_CALLABLE inline int hash_grid_point_id(uint64_t id, int& index) {
-    const HashGrid* grid = (const HashGrid*)(id);
+    const auto* grid = (const HashGrid*)(id);
     if (grid->point_ids == nullptr) return -1;
     return grid->point_ids[index];
 }

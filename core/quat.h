@@ -41,7 +41,7 @@ struct quat_t {
         }
     }
 
-    inline CUDA_CALLABLE Type &operator[](int index) {
+    inline CUDA_CALLABLE Type& operator[](int index) {
         assert(index < 4);
         if (index == 0) {
             return x;
@@ -57,9 +57,9 @@ struct quat_t {
         }
     }
 
-    CUDA_CALLABLE inline quat_t operator*=(const quat_t &h);
+    CUDA_CALLABLE inline quat_t operator*=(const quat_t& h);
 
-    CUDA_CALLABLE inline quat_t operator*=(const Type &h);
+    CUDA_CALLABLE inline quat_t operator*=(const Type& h);
 };
 
 using quat = quat_t<float>;
@@ -209,19 +209,19 @@ inline CUDA_CALLABLE quat_t<Type> operator*(const quat_t<Type>& a, Type s) {
     return mul(a, s);
 }
 
-template<typename Type>
-inline CUDA_CALLABLE quat_t<Type> operator*(const quat_t<Type> &a, const quat_t<Type> &b) {
+template <typename Type>
+inline CUDA_CALLABLE quat_t<Type> operator*(const quat_t<Type>& a, const quat_t<Type>& b) {
     return mul(a, b);
 }
 
-template<typename Type>
-CUDA_CALLABLE inline quat_t<Type> quat_t<Type>::operator*=(const quat_t &h) {
+template <typename Type>
+CUDA_CALLABLE inline quat_t<Type> quat_t<Type>::operator*=(const quat_t& h) {
     *this = mul(*this, h);
     return *this;
 }
 
-template<typename Type>
-CUDA_CALLABLE inline quat_t<Type> quat_t<Type>::operator*=(const Type &h) {
+template <typename Type>
+CUDA_CALLABLE inline quat_t<Type> quat_t<Type>::operator*=(const Type& h) {
     *this = mul(*this, h);
     return *this;
 }

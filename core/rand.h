@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "array.h"
+#include "core/array.h"
 #include "vec.h"
 
 #ifndef M_PI
@@ -53,7 +53,7 @@ inline CUDA_CALLABLE int sample_cdf(uint32& state, const array_t<float>& cdf) {
 
 inline CUDA_CALLABLE vec2 sample_triangle(uint32& state) {
     float r = sqrt(randf(state));
-    float u = 1.0 - r;
+    float u = 1.f - r;
     float v = randf(state) * r;
     return vec2(u, v);
 }
@@ -149,7 +149,7 @@ inline CUDA_CALLABLE float random_loggam(float x) {
     }
 
     x0 = x + float(n);
-    x2 = (1.0 / x0) * (1.0 / x0);
+    x2 = (1.f / x0) * (1.f / x0);
     // log(2 * M_PI)
     lg2pi = 1.8378770664093453f;
     gl0 = a[9];
@@ -157,10 +157,10 @@ inline CUDA_CALLABLE float random_loggam(float x) {
         gl0 *= x2;
         gl0 += a[i];
     }
-    gl = gl0 / x0 + 0.5 * lg2pi + (x0 - 0.5) * log(x0) - x0;
+    gl = gl0 / x0 + 0.5f * lg2pi + (x0 - 0.5f) * log(x0) - x0;
     if (x < 7.0) {
         for (uint32 k = 1; k <= n; k++) {
-            gl -= log(x0 - 1.0);
+            gl -= log(x0 - 1.f);
             x0 -= 1.0;
         }
     }
@@ -175,7 +175,7 @@ inline CUDA_CALLABLE uint32 random_poisson_mult(uint32& state, float lam) {
     X = 0;
     prod = 1.0;
 
-    while (1) {
+    while (true) {
         U = randf(state);
         prod *= U;
         if (prod > enlam) {
@@ -197,16 +197,16 @@ inline CUDA_CALLABLE uint32 random_poisson(uint32& state, float lam) {
 
     slam = sqrt(lam);
     loglam = log(lam);
-    b = 0.931 + 2.53 * slam;
-    a = -0.059 + 0.02483 * b;
-    invalpha = 1.1239 + 1.1328 / (b - 3.4);
-    vr = 0.9277 - 3.6224 / (b - 2.0);
+    b = 0.931f + 2.53f * slam;
+    a = -0.059f + 0.02483f * b;
+    invalpha = 1.1239f + 1.1328f / (b - 3.4f);
+    vr = 0.9277f - 3.6224f / (b - 2.0f);
 
-    while (1) {
-        U = randf(state) - 0.5;
+    while (true) {
+        U = randf(state) - 0.5f;
         V = randf(state);
-        us = 0.5 - abs(U);
-        k = uint32(floor((2 * a / us + b) * U + lam + 0.43));
+        us = 0.5f - abs(U);
+        k = uint32(floor((2 * a / us + b) * U + lam + 0.43f));
         if ((us >= 0.07) && (V <= vr)) {
             return k;
         }

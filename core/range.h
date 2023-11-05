@@ -21,14 +21,14 @@ namespace wp {
 
 // represents a built-in Python range() loop
 struct range_t {
-    CUDA_CALLABLE range_t() {}
+    CUDA_CALLABLE range_t() = default;
     CUDA_CALLABLE range_t(int) {}  // for backward pass
 
-    int start;
-    int end;
-    int step;
+    int start{};
+    int end{};
+    int step{};
 
-    int i;
+    int i{};
 };
 
 CUDA_CALLABLE inline range_t range(int end) {

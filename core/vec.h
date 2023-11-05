@@ -76,11 +76,11 @@ struct vec_t {
         return c[index];
     }
 
-    CUDA_CALLABLE inline vec_t operator/=(const Type &h);
+    CUDA_CALLABLE inline vec_t operator/=(const Type& h);
 
-    CUDA_CALLABLE inline vec_t operator*=(const vec_t &h);
+    CUDA_CALLABLE inline vec_t operator*=(const vec_t& h);
 
-    CUDA_CALLABLE inline vec_t operator*=(const Type &h);
+    CUDA_CALLABLE inline vec_t operator*=(const Type& h);
 };
 
 using vec2b = vec_t<2, int8>;
@@ -214,14 +214,14 @@ inline CUDA_CALLABLE vec_t<Length, Type> operator*(vec_t<Length, Type> a, Type s
     return mul(a, s);
 }
 
-template<unsigned Length, typename Type>
-CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator*=(const vec_t &h) {
+template <unsigned Length, typename Type>
+CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator*=(const vec_t& h) {
     *this = mul(*this, h);
     return *this;
 }
 
-template<unsigned Length, typename Type>
-CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator*=(const Type &h) {
+template <unsigned Length, typename Type>
+CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator*=(const Type& h) {
     *this = mul(*this, h);
     return *this;
 }
@@ -261,8 +261,8 @@ inline CUDA_CALLABLE vec_t<Length, Type> operator/(vec_t<Length, Type> a, Type s
     return div(a, s);
 }
 
-template<unsigned Length, typename Type>
-CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator/=(const Type &h) {
+template <unsigned Length, typename Type>
+CUDA_CALLABLE inline vec_t<Length, Type> vec_t<Length, Type>::operator/=(const Type& h) {
     *this = div(*this, h);
     return *this;
 }

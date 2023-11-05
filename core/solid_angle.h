@@ -43,25 +43,25 @@ public:
     vec3 n_ij_diag;
     vec3 n_ijk_diag;
 
-    float sum_permute_n_xyz;
-    float two_n_xxy_n_yxx;
-    float two_n_xxz_n_zxx;
-    float two_n_yyz_n_zyy;
-    float two_n_yyx_n_xyy;
-    float two_n_zzx_n_xzz;
-    float two_n_zzy_n_yzz;
+    float sum_permute_n_xyz{};
+    float two_n_xxy_n_yxx{};
+    float two_n_xxz_n_zxx{};
+    float two_n_yyz_n_zyy{};
+    float two_n_yyx_n_xyy{};
+    float two_n_zzx_n_xzz{};
+    float two_n_zzy_n_yzz{};
 
-    float n_xy;
-    float n_yx;
-    float n_yz;
-    float n_zy;
-    float n_zx;
-    float n_xz;
+    float n_xy{};
+    float n_yx{};
+    float n_yz{};
+    float n_zy{};
+    float n_zx{};
+    float n_xz{};
 
     bounds3 box;
     vec3 area_P;
-    float area;
-    float max_p_dist_sq;
+    float area{};
+    float max_p_dist_sq{};
 };
 
 CUDA_CALLABLE inline void compute_integrals(const vec3 &a,
@@ -126,7 +126,7 @@ CUDA_CALLABLE inline void compute_integrals(const vec3 &a,
         integral = integral_ik;
         diff = kdiff;
     }
-};
+}
 
 CUDA_CALLABLE inline void my_swap(int &a, int &b) {
     int c = a;

@@ -94,7 +94,7 @@ struct transform_t {
         return p.c[index];
     }
 
-    CUDA_CALLABLE inline transform_t operator*=(const transform_t &h);
+    CUDA_CALLABLE inline transform_t operator*=(const transform_t& h);
 };
 
 template <typename Type = float32>
@@ -181,13 +181,13 @@ CUDA_CALLABLE inline transform_t<Type> operator*(Type s, const transform_t<Type>
     return mul(a, s);
 }
 
-template<typename Type>
-CUDA_CALLABLE inline transform_t<Type> operator*(const transform_t<Type> &a, const transform_t<Type> &b) {
+template <typename Type>
+CUDA_CALLABLE inline transform_t<Type> operator*(const transform_t<Type>& a, const transform_t<Type>& b) {
     return mul(a, b);
 }
 
-template<typename Type>
-CUDA_CALLABLE inline transform_t<Type> transform_t<Type>::operator*=(const transform_t &h) {
+template <typename Type>
+CUDA_CALLABLE inline transform_t<Type> transform_t<Type>::operator*=(const transform_t& h) {
     *this = mul(*this, h);
     return *this;
 }
@@ -249,7 +249,7 @@ inline CUDA_CALLABLE spatial_matrix_t<Type> spatial_adjoint(const mat_t<3, 3, Ty
 
 CUDA_CALLABLE inline int row_index(int stride, int i, int j) { return i * stride + j; }
 
-// builds spatial Jacobian J which is an (joint_count*6)x(dof_count) matrix
+// builds spatial Jacobian J which is a (joint_count*6)x(dof_count) matrix
 template <typename Type>
 CUDA_CALLABLE inline void spatial_jacobian(const spatial_vector_t<Type>* S,
                                            const int* joint_parents,

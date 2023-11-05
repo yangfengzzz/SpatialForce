@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include "array.h"
 #include "builtin.h"
 #include "bvh.h"
+#include "core/array.h"
 #include "intersect.h"
 #include "solid_angle.h"
 
@@ -28,7 +28,7 @@ struct Mesh {
     int num_points;
     int num_tris;
 
-    BVH bvh;
+    BVH bvh{};
 
     void* context;
     float average_edge_length;
@@ -975,21 +975,21 @@ CUDA_CALLABLE inline float mesh_query_inside(uint64_t id, const vec3& p) {
 // stores state required to traverse the BVH nodes that
 // overlap with a query AABB.
 struct mesh_query_aabb_t {
-    CUDA_CALLABLE mesh_query_aabb_t() {}
+    CUDA_CALLABLE mesh_query_aabb_t() = default;
     CUDA_CALLABLE mesh_query_aabb_t(int) {}  // for backward pass
 
     // Mesh Id
     Mesh mesh;
     // BVH traversal stack:
-    int stack[32];
-    int count;
+    int stack[32]{};
+    int count{};
 
     // inputs
     wp::vec3 input_lower;
     wp::vec3 input_upper;
 
     // Face
-    int face;
+    int face{};
 };
 
 CUDA_CALLABLE inline mesh_query_aabb_t mesh_query_aabb(uint64_t id, const vec3& lower, const vec3& upper) {

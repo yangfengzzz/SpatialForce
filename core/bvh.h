@@ -56,7 +56,7 @@ BVH bvh_clone(void* context, const BVH& bvh_host);
 #endif  // !__CUDA_ARCH__
 
 CUDA_CALLABLE inline BVHPackedNodeHalf make_node(const vec3& bound, int child, bool leaf) {
-    BVHPackedNodeHalf n;
+    BVHPackedNodeHalf n{};
     n.x = bound[0];
     n.y = bound[1];
     n.z = bound[2];
@@ -114,21 +114,21 @@ CUDA_CALLABLE inline int bvh_get_num_bounds(uint64_t id) {
 // stores state required to traverse the BVH nodes that
 // overlap with a query AABB.
 struct bvh_query_t {
-    CUDA_CALLABLE bvh_query_t() {}
+    CUDA_CALLABLE bvh_query_t() = default;
     CUDA_CALLABLE bvh_query_t(int) {}  // for backward pass
 
-    BVH bvh;
+    BVH bvh{};
 
     // BVH traversal stack:
-    int stack[32];
-    int count;
+    int stack[32]{};
+    int count{};
 
     // inputs
-    bool is_ray;
+    bool is_ray{};
     wp::vec3 input_lower;  // start for ray
     wp::vec3 input_upper;  // dir for ray
 
-    int bounds_nr;
+    int bounds_nr{};
 };
 
 CUDA_CALLABLE inline bvh_query_t bvh_query(uint64_t id, bool is_ray, const vec3& lower, const vec3& upper) {
