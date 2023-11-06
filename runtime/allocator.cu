@@ -12,7 +12,7 @@ namespace wp {
 Allocator::Allocator(Device &device) : device_{device} {}
 
 void *Allocator::alloc(size_t s) {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
 
     void *ptr;
     check_cuda(cudaMalloc(&ptr, s));
@@ -20,7 +20,7 @@ void *Allocator::alloc(size_t s) {
 }
 
 void Allocator::free(void *ptr) {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
     check_cuda(cudaFree(ptr));
 }
 

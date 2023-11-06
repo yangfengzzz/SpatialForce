@@ -10,7 +10,7 @@
 
 namespace wp {
 
-struct HashGrid {
+struct hash_grid_t {
     float cell_width{};
     float cell_width_inv{};
 
@@ -31,7 +31,7 @@ struct HashGrid {
 };
 
 // convert a virtual (world) cell coordinate to a physical one
-CUDA_CALLABLE inline int hash_grid_index(const HashGrid& grid, int x, int y, int z) {
+CUDA_CALLABLE inline int hash_grid_index(const hash_grid_t& grid, int x, int y, int z) {
     // offset to ensure positive coordinates (means grid dim should be less than 4096^3)
     const int origin = 1 << 20;
 
@@ -61,14 +61,14 @@ CUDA_CALLABLE inline int hash_grid_index(const HashGrid& grid, int x, int y, int
     return cz * (grid.dim_x * grid.dim_y) + cy * grid.dim_x + cx;
 }
 
-CUDA_CALLABLE inline int hash_grid_index(const HashGrid& grid, const vec3& p) {
+CUDA_CALLABLE inline int hash_grid_index(const hash_grid_t& grid, const vec3& p) {
     return hash_grid_index(grid, int(p[0] * grid.cell_width_inv), int(p[1] * grid.cell_width_inv),
                            int(p[2] * grid.cell_width_inv));
 }
 
 // stores state required to traverse neighboring cells of a point
 struct hash_grid_query_t {
-    CUDA_CALLABLE hash_grid_query_t() = default;
+    hash_grid_query_t() = default;
     CUDA_CALLABLE hash_grid_query_t(int) {}  // for backward pass
 
     int x_start{};
@@ -89,13 +89,13 @@ struct hash_grid_query_t {
 
     int current{};  // index of the current iterator value
 
-    HashGrid grid;
+    hash_grid_t grid;
 };
 
 CUDA_CALLABLE inline hash_grid_query_t hash_grid_query(uint64_t id, wp::vec3 pos, float radius) {
     hash_grid_query_t query;
 
-    query.grid = *(const HashGrid*)(id);
+    query.grid = *(const hash_grid_t*)(id);
 
     // convert coordinate to grid
     query.x_start = int((pos[0] - radius) * query.grid.cell_width_inv);
@@ -119,7 +119,7 @@ CUDA_CALLABLE inline hash_grid_query_t hash_grid_query(uint64_t id, wp::vec3 pos
 }
 
 CUDA_CALLABLE inline bool hash_grid_query_next(hash_grid_query_t& query, int& index) {
-    const HashGrid& grid = query.grid;
+    const hash_grid_t& grid = query.grid;
     if (!grid.point_cells) return false;
 
     while (true) {
@@ -166,7 +166,7 @@ CUDA_CALLABLE inline hash_grid_query_t iter_reverse(const hash_grid_query_t& que
 }
 
 CUDA_CALLABLE inline int hash_grid_point_id(uint64_t id, int& index) {
-    const auto* grid = (const HashGrid*)(id);
+    const auto* grid = (const hash_grid_t*)(id);
     if (grid->point_ids == nullptr) return -1;
     return grid->point_ids[index];
 }

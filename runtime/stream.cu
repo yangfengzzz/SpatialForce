@@ -11,31 +11,33 @@
 
 namespace wp {
 Stream::Stream(Device &device) : device_{device} {
-    ContextGuard guard(device.get_context(), true);
-    check_cu(cuStreamCreate(static_cast<CUstream *>(stream), CU_STREAM_DEFAULT));
+    ContextGuard guard(device.context(), true);
+    check_cu(cuStreamCreate(static_cast<CUstream *>(handle_), CU_STREAM_DEFAULT));
 }
 
 Stream::~Stream() {
-    ContextGuard guard(device_.get_context(), true);
-    check_cu(cuStreamDestroy(static_cast<CUstream>(stream)));
+    ContextGuard guard(device_.context(), true);
+    check_cu(cuStreamDestroy(static_cast<CUstream>(handle_)));
 }
 
 void Stream::record_event(Event &event) {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
 
-    check_cu(cuEventRecord(static_cast<CUevent>(event.handle()), static_cast<CUstream>(stream)));
+    check_cu(cuEventRecord(static_cast<CUevent>(event.handle()), static_cast<CUstream>(handle_)));
 }
 
 void Stream::wait_event(Event &event) {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
 
-    check_cu(cuStreamWaitEvent(static_cast<CUstream>(stream), static_cast<CUevent>(event.handle()), 0));
+    check_cu(cuStreamWaitEvent(static_cast<CUstream>(handle_), static_cast<CUevent>(event.handle()), 0));
 }
 
 void Stream::wait_stream(Stream &other_stream, Event &event) {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
 
-    check_cu(cuEventRecord(static_cast<CUevent>(event.handle()), static_cast<CUstream>(other_stream.stream)));
-    check_cu(cuStreamWaitEvent(static_cast<CUstream>(stream), static_cast<CUevent>(event.handle()), 0));
+    check_cu(cuEventRecord(static_cast<CUevent>(event.handle()), static_cast<CUstream>(other_stream.handle_)));
+    check_cu(cuStreamWaitEvent(static_cast<CUstream>(handle_), static_cast<CUevent>(event.handle()), 0));
 }
+
+void *Stream::handle() { return handle_; }
 }  // namespace wp

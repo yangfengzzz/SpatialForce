@@ -89,7 +89,7 @@ inline CUDA_CALLABLE void print(shape_t s) {
 
 template <typename T>
 struct array_t {
-    CUDA_CALLABLE inline array_t() = default;
+    inline array_t() = default;
     CUDA_CALLABLE inline array_t(int) {}  // for backward a = 0 initialization syntax
 
     CUDA_CALLABLE array_t(T* data, int size) : data(data) {
@@ -165,7 +165,7 @@ struct array_t {
 // - templated dimensionality? (also for array_t to save space when passing arrays to kernels)
 template <typename T>
 struct indexedarray_t {
-    CUDA_CALLABLE inline indexedarray_t() = default;
+    inline indexedarray_t() = default;
     CUDA_CALLABLE inline indexedarray_t(int) {}  // for backward a = 0 initialization syntax
 
     CUDA_CALLABLE inline bool empty() const { return !arr.data; }

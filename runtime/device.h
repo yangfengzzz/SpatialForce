@@ -6,11 +6,29 @@
 
 #pragma once
 
+#include "allocator.h"
+#include "stream.h"
+
 namespace wp {
 class Device {
 public:
-    void* get_context();
+    Device();
+
+    void* context();
+
+    Allocator& allocator();
+
+    Stream& stream();
+
+public:
+    void memcpy_h2d(void* dest, void* src, size_t n);
+    void memcpy_d2h(void* dest, void* src, size_t n);
+    void memcpy_d2d(void* dest, void* src, size_t n);
+    void memcpy_peer(void* dest, void* src, size_t n);
 
 private:
+    void* context_;
+    Allocator allocator_;
+    Stream stream_;
 };
 }  // namespace wp

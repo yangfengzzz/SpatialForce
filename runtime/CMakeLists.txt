@@ -27,6 +27,8 @@ set(COMMON_FILES
 
 set(TYPE_FILES
         array.h
+        radix_sort.h
+        radix_sort.cu
         hash_grid.h
         hash_grid.cu
 )

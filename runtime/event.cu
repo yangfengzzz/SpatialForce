@@ -15,12 +15,12 @@ Event::Event(Device &device, bool enable_timing) : device_{device} {
         flags |= CU_EVENT_DISABLE_TIMING;
     }
 
-    ContextGuard guard(device.get_context());
+    ContextGuard guard(device.context());
     check_cu(cuEventCreate(reinterpret_cast<CUevent *>(&event_), flags));
 }
 
 Event::~Event() {
-    ContextGuard guard(device_.get_context(), true);
+    ContextGuard guard(device_.context(), true);
     check_cu(cuEventDestroy(static_cast<CUevent>(event_)));
 }
 

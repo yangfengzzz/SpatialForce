@@ -22,8 +22,10 @@ public:
 
     void wait_stream(Stream &other_stream, Event &event);
 
+    void* handle();
+
 private:
     Device &device_;
-    void *stream{};
+    void *handle_{};
 };
 }  // namespace wp

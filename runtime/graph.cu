@@ -12,7 +12,7 @@ namespace wp {
 Graph::Graph(Device &device, void *graph) : device_{device}, graph_{graph} {}
 
 Graph::~Graph() {
-    ContextGuard guard(device_.get_context());
+    ContextGuard guard(device_.context());
 
     check_cuda(cudaGraphExecDestroy((cudaGraphExec_t)graph_));
 }

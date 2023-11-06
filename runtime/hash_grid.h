@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "core/hashgrid.h"
+
 namespace wp {
 class Device;
 
@@ -15,5 +17,6 @@ public:
 
 private:
     Device& device_;
+    hash_grid_t handle_;
 };
 }  // namespace wp
