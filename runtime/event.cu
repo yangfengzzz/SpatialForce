@@ -9,19 +9,15 @@
 #include "event.h"
 
 namespace wp {
-Event::Event(Device &device, bool enable_timing) : device_{device} {
+Event::Event(bool enable_timing) {
     int flags = CU_EVENT_DEFAULT;
     if (!enable_timing) {
         flags |= CU_EVENT_DISABLE_TIMING;
     }
 
-    ContextGuard guard(device.context());
     check_cu(cuEventCreate(reinterpret_cast<CUevent *>(&event_), flags));
 }
 
-Event::~Event() {
-    ContextGuard guard(device_.context(), true);
-    check_cu(cuEventDestroy(static_cast<CUevent>(event_)));
-}
+Event::~Event() { check_cu(cuEventDestroy(static_cast<CUevent>(event_))); }
 
 }  // namespace wp

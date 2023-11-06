@@ -11,14 +11,13 @@ class Device;
 
 class Event {
 public:
-    explicit Event(Device &device, bool enable_timing = false);
+    explicit Event(bool enable_timing = false);
 
     ~Event();
 
     void *handle() { return event_; }
 
 private:
-    Device &device_;
     void *event_{};
 };
 }  // namespace wp

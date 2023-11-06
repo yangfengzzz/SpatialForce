@@ -10,12 +10,11 @@ namespace wp {
 class Device;
 class Graph {
 public:
-    Graph(Device &device, void *graph);
+    Graph(void *graph);
 
     ~Graph();
 
 private:
     void *graph_;
-    Device &device_;
 };
 }  // namespace wp

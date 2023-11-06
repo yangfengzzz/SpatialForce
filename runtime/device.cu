@@ -8,35 +8,22 @@
 #include "device.h"
 
 namespace wp {
-Device::Device() : allocator_(*this), stream_(*this) {}
-
-void* Device::context() { return context_; }
-
-Allocator& Device::allocator() { return allocator_; }
-
-Stream& Device::stream() { return stream_; }
-
-void Device::memcpy_h2d(void* dest, void* src, size_t n) {
-    ContextGuard guard(context_);
-
-    check_cuda(cudaMemcpyAsync(dest, src, n, cudaMemcpyHostToDevice, (cudaStream_t)stream().handle()));
-}
-void Device::memcpy_d2h(void* dest, void* src, size_t n) {
-    ContextGuard guard(context_);
-
-    check_cuda(cudaMemcpyAsync(dest, src, n, cudaMemcpyDeviceToHost, (cudaStream_t)stream().handle()));
-}
-void Device::memcpy_d2d(void* dest, void* src, size_t n) {
-    ContextGuard guard(context_);
-
-    check_cuda(cudaMemcpyAsync(dest, src, n, cudaMemcpyDeviceToDevice, (cudaStream_t)stream().handle()));
+Device::Device(Context::DeviceInfo info) : info_(info) {
+    CUcontext context = nullptr;
+    check_cu(cuDevicePrimaryCtxRetain(&context, info.device));
+    context_ = context;
 }
 
-void Device::memcpy_peer(void* dest, void* src, size_t n) {
-    ContextGuard guard(context_);
+void *Device::context() { return context_; }
 
-    // NB: assumes devices involved support UVA
-    check_cuda(cudaMemcpyAsync(dest, src, n, cudaMemcpyDefault, (cudaStream_t)stream().handle()));
+void *Device::alloc(size_t s) {
+    void *ptr;
+    check_cuda(cudaMalloc(&ptr, s));
+    return ptr;
 }
+
+void Device::free(void *ptr) { check_cuda(cudaFree(ptr)); }
+
+Stream Device::create_stream() { return Stream(*this); }
 
 }  // namespace wp

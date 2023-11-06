@@ -9,15 +9,13 @@
 #include <map>
 
 namespace wp {
-class Device;
+class Stream;
 
 class RadixSort {
 public:
-    explicit RadixSort(Device& device);
+    static void reserve(Stream& stream, int n, void** mem_out = nullptr, size_t* size_out = nullptr);
 
-    void reserve(int n, void** mem_out = nullptr, size_t* size_out = nullptr);
-
-    void sort_pairs(int* keys, int* values, int n);
+    static void sort_pairs(Stream& stream, int* keys, int* values, int n);
 
 private:
     // temporary buffer for radix sort
@@ -28,7 +26,5 @@ private:
 
     // map temp buffers to CUDA contexts
     static std::map<void*, RadixSortTemp> g_radix_sort_temp_map;
-
-    Device& device_;
 };
 }  // namespace wp

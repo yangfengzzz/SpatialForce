@@ -12,13 +12,10 @@
 #include "cuda_util.h"
 
 namespace wp {
+class Device;
+
 class Context {
 public:
-    Context();
-
-    int cuda_init();
-
-private:
     struct DeviceInfo {
         static constexpr int kNameLen = 128;
 
@@ -30,19 +27,17 @@ private:
         int is_memory_pool_supported = 0;
     };
 
-    struct ContextInfo {
-        DeviceInfo *device_info = nullptr;
+    Context();
 
-        CUstream stream = nullptr;  // created when needed
-    };
+    Device creat_device();
 
+private:
     // cached info for all devices, indexed by ordinal
     std::vector<DeviceInfo> g_devices;
 
     // maps CUdevice to DeviceInfo
     std::map<CUdevice, DeviceInfo *> g_device_map;
 
-    // cached info for all known contexts
-    std::map<CUcontext, ContextInfo> g_contexts;
+    int active_index{};
 };
 }  // namespace wp

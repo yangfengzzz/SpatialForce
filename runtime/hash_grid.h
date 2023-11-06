@@ -7,16 +7,19 @@
 #pragma once
 
 #include "core/hashgrid.h"
+#include "runtime/radix_sort.h"
 
 namespace wp {
 class Device;
 
 class HashGrid {
 public:
-    HashGrid(Device& device, uint32_t dim_x, uint32_t dim_y, uint32_t dim_z);
+    HashGrid(Stream& stream, uint32_t dim_x, uint32_t dim_y, uint32_t dim_z);
 
 private:
-    Device& device_;
     hash_grid_t handle_;
+    uint64_t grid_id_;
+
+    void rebuild(Stream& stream, const wp::vec3* points, int num_points);
 };
 }  // namespace wp

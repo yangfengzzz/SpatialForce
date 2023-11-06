@@ -5,12 +5,11 @@
 //  property of any third parties.
 
 #include "context.h"
+#include "runtime/device.h"
 
 namespace wp {
-Context::Context() { cuda_init(); }
-
-int Context::cuda_init() {
-    if (!check_cu(cuInit(0))) return -1;
+Context::Context() {
+    if (!check_cu(cuInit(0))) return;
 
     int deviceCount = 0;
     if (check_cu(cuDeviceGetCount(&deviceCount))) {
@@ -32,16 +31,22 @@ int Context::cuda_init() {
                 check_cu(cuDeviceGetAttribute(&minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
                 g_devices[i].arch = 10 * major + minor;
 
+                CUdevice device;
+                if (check_cu(cuDeviceGet(&device, 1))) check_cu(cuDevicePrimaryCtxRelease(device));
+
                 g_device_map[device] = &g_devices[i];
             } else {
-                return -1;
+                return;
             }
         }
     } else {
-        return -1;
+        return;
     }
+}
 
-    return 0;
+Device Context::creat_device() {
+    active_index += 1;
+    return Device(g_devices[active_index-1]);
 }
 
 }  // namespace wp

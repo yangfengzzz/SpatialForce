@@ -15,8 +15,6 @@ set(COMMON_FILES
         device.cu
         context.h
         context.cu
-        allocator.h
-        allocator.cu
         graph.h
         graph.cu
         stream.h

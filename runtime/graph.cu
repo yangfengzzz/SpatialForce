@@ -9,11 +9,7 @@
 #include "graph.h"
 
 namespace wp {
-Graph::Graph(Device &device, void *graph) : device_{device}, graph_{graph} {}
+Graph::Graph(void *graph) : graph_{graph} {}
 
-Graph::~Graph() {
-    ContextGuard guard(device_.context());
-
-    check_cuda(cudaGraphExecDestroy((cudaGraphExec_t)graph_));
-}
+Graph::~Graph() { check_cuda(cudaGraphExecDestroy((cudaGraphExec_t)graph_)); }
 }  // namespace wp

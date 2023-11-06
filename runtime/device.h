@@ -6,29 +6,24 @@
 
 #pragma once
 
-#include "allocator.h"
+#include "runtime/context.h"
 #include "stream.h"
 
 namespace wp {
 class Device {
 public:
-    Device();
+    explicit Device(Context::DeviceInfo info);
 
     void* context();
 
-    Allocator& allocator();
+    Stream create_stream();
 
-    Stream& stream();
+    static void* alloc(size_t s);
 
-public:
-    void memcpy_h2d(void* dest, void* src, size_t n);
-    void memcpy_d2h(void* dest, void* src, size_t n);
-    void memcpy_d2d(void* dest, void* src, size_t n);
-    void memcpy_peer(void* dest, void* src, size_t n);
+    static void free(void* ptr);
 
 private:
+    Context::DeviceInfo info_;
     void* context_;
-    Allocator allocator_;
-    Stream stream_;
 };
 }  // namespace wp
