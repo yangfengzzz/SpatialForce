@@ -30,7 +30,6 @@ struct mesh_t {
 
     bvh_t bvh{};
 
-    void* context;
     float average_edge_length;
 
     inline CUDA_CALLABLE mesh_t(int id = 0) {
@@ -38,7 +37,6 @@ struct mesh_t {
         bounds = nullptr;
         num_points = 0;
         num_tris = 0;
-        context = nullptr;
         solid_angle_props = nullptr;
         average_edge_length = 0.0f;
     }
@@ -47,14 +45,12 @@ struct mesh_t {
                                 array_t<vec3> velocities,
                                 array_t<int> indices,
                                 int num_points,
-                                int num_tris,
-                                void* context = nullptr)
+                                int num_tris)
         : points(points),
           velocities(velocities),
           indices(indices),
           num_points(num_points),
-          num_tris(num_tris),
-          context(context) {
+          num_tris(num_tris) {
         bounds = nullptr;
         solid_angle_props = nullptr;
         average_edge_length = 0.0f;

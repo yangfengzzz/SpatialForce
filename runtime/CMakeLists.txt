@@ -27,6 +27,8 @@ set(TYPE_FILES
         array.h
         radix_sort.h
         radix_sort.cu
+        scan.h
+        scan.cu
         hash_grid.h
         hash_grid.cu
         bvh.h

@@ -416,11 +416,14 @@ __global__ void set_bounds_from_lowers_and_uppers(int n, bounds3* b, const vec3*
 void BVH::refit() {
     wp_launch_device((CUstream)stream_.handle(), wp::set_bounds_from_lowers_and_uppers, descriptor_.num_bounds,
                      (descriptor_.num_bounds, descriptor_.bounds, descriptor_.lowers, descriptor_.uppers));
-    // clear child counters
-    stream_.memset(descriptor_.node_counts, 0, sizeof(int) * descriptor_.max_nodes);
+    BVH::refit(stream_, descriptor_, descriptor_.bounds);
+}
 
-    wp_launch_device((CUstream)stream_.handle(), bvh_refit_kernel, descriptor_.max_nodes,
-                     (descriptor_.max_nodes, descriptor_.node_parents, descriptor_.node_counts, descriptor_.node_lowers,
-                      descriptor_.node_uppers, descriptor_.bounds));
+void BVH::refit(Stream& stream, bvh_t& bvh, const bounds3* b) {
+    // clear child counters
+    stream.memset(bvh.node_counts, 0, sizeof(int) * bvh.max_nodes);
+
+    wp_launch_device((CUstream)stream.handle(), bvh_refit_kernel, bvh.max_nodes,
+                     (bvh.max_nodes, bvh.node_parents, bvh.node_counts, bvh.node_lowers, bvh.node_uppers, b));
 }
 }  // namespace wp

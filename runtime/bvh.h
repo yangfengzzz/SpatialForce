@@ -18,6 +18,8 @@ public:
 
     void refit();
 
+    static void refit(Stream& stream, bvh_t& bvh, const bounds3* b);
+
 private:
     Stream& stream_;
     uint64_t id_{};

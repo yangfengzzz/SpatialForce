@@ -7,12 +7,21 @@
 #pragma once
 
 #include "core/mesh.h"
+#include "runtime/array.h"
 
 namespace wp {
 class Mesh {
 public:
+    Mesh(Stream& stream, const Array<vec3>& points, const Array<vec3>& velocities, const Array<int>& indices, bool support_winding_number);
+
+    ~Mesh();
+
+    void refit();
 
 private:
+    void bvh_refit_with_solid_angle_device(bvh_t& bvh, mesh_t& mesh);
+
+    Stream& stream_;
     uint64_t id_{};
     mesh_t descriptor_;
 };
