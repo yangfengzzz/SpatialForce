@@ -36,8 +36,6 @@ struct bvh_t {
     vec3* uppers;
     bounds3* bounds;
     int num_bounds;
-
-    void* context;
 };
 
 CUDA_CALLABLE inline BVHPackedNodeHalf make_node(const vec3& bound, int child, bool leaf) {

@@ -12,14 +12,15 @@
 namespace wp {
 class BVH {
 public:
-    BVH(const Array<vec3f>& lowers, const Array<vec3f>& uppers);
+    BVH(Stream& stream, const Array<vec3f>& lowers, const Array<vec3f>& uppers);
 
     ~BVH();
 
     void refit();
 
 private:
-    uint64_t id_;
-    bvh_t descriptor_;
+    Stream& stream_;
+    uint64_t id_{};
+    bvh_t descriptor_{};
 };
 }  // namespace wp
