@@ -7,14 +7,22 @@
 #pragma once
 
 namespace wp {
-class Device;
+class Stream;
+
 class Graph {
 public:
-    Graph(void *graph);
+    explicit Graph(Stream& stream);
 
     ~Graph();
 
+    void capture_begin();
+
+    void end_capture();
+
+    void launch();
+
 private:
-    void *graph_;
+    Stream& stream_;
+    void* graph_{};
 };
 }  // namespace wp

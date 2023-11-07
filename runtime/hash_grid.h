@@ -16,10 +16,20 @@ class HashGrid {
 public:
     HashGrid(Stream& stream, uint32_t dim_x, uint32_t dim_y, uint32_t dim_z);
 
+    ~HashGrid();
+
+    uint64_t id() const { return grid_id_; }
+
+    void reserve(int num_points);
+
+    void update(float cell_width, const wp::vec3* positions, int num_points);
+
 private:
+    Stream& stream_;
+    RadixSort sort_;
     hash_grid_t handle_;
     uint64_t grid_id_;
 
-    void rebuild(Stream& stream, const wp::vec3* points, int num_points);
+    void rebuild(const wp::vec3* points, int num_points);
 };
 }  // namespace wp

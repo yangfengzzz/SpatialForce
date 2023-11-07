@@ -13,11 +13,15 @@ class Stream;
 
 class RadixSort {
 public:
-    static void reserve(Stream& stream, int n, void** mem_out = nullptr, size_t* size_out = nullptr);
+    explicit RadixSort(Stream& stream);
 
-    static void sort_pairs(Stream& stream, int* keys, int* values, int n);
+    void reserve(int n, void** mem_out = nullptr, size_t* size_out = nullptr);
+
+    void sort_pairs(int* keys, int* values, int n);
 
 private:
+    Stream& stream_;
+
     // temporary buffer for radix sort
     struct RadixSortTemp {
         void* mem = nullptr;
