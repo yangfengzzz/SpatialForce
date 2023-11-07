@@ -29,6 +29,10 @@ set(TYPE_FILES
         radix_sort.cu
         hash_grid.h
         hash_grid.cu
+        bvh.h
+        bvh.cu
+        mesh.h
+        mesh.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})

@@ -16,7 +16,7 @@
 
 namespace wp {
 
-struct Mesh {
+struct mesh_t {
     array_t<vec3> points;
     array_t<vec3> velocities;
 
@@ -28,12 +28,12 @@ struct Mesh {
     int num_points;
     int num_tris;
 
-    BVH bvh{};
+    bvh_t bvh{};
 
     void* context;
     float average_edge_length;
 
-    inline CUDA_CALLABLE Mesh(int id = 0) {
+    inline CUDA_CALLABLE mesh_t(int id = 0) {
         // for backward a = 0 initialization syntax
         bounds = nullptr;
         num_points = 0;
@@ -43,12 +43,12 @@ struct Mesh {
         average_edge_length = 0.0f;
     }
 
-    inline CUDA_CALLABLE Mesh(array_t<vec3> points,
-                              array_t<vec3> velocities,
-                              array_t<int> indices,
-                              int num_points,
-                              int num_tris,
-                              void* context = nullptr)
+    inline CUDA_CALLABLE mesh_t(array_t<vec3> points,
+                                array_t<vec3> velocities,
+                                array_t<int> indices,
+                                int num_points,
+                                int num_tris,
+                                void* context = nullptr)
         : points(points),
           velocities(velocities),
           indices(indices),
@@ -61,12 +61,7 @@ struct Mesh {
     }
 };
 
-CUDA_CALLABLE inline Mesh mesh_get(uint64_t id) { return *(Mesh*)(id); }
-
-CUDA_CALLABLE inline Mesh& operator+=(Mesh& a, const Mesh& b) {
-    // dummy operator needed for adj_select involving meshes
-    return a;
-}
+CUDA_CALLABLE inline mesh_t mesh_get(uint64_t id) { return *(mesh_t*)(id); }
 
 CUDA_CALLABLE inline float distance_to_aabb_sq(const vec3& p, const vec3& lower, const vec3& upper) {
     vec3 cp = closest_point_to_aabb(p, lower, upper);
@@ -79,7 +74,7 @@ CUDA_CALLABLE inline float mesh_query_inside(uint64_t id, const vec3& p);
 // returns true if there is a point (strictly) < distance max_dist
 CUDA_CALLABLE inline bool mesh_query_point(
         uint64_t id, const vec3& point, float max_dist, float& inside, int& face, float& u, float& v) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (mesh.bvh.num_nodes == 0) return false;
 
@@ -246,7 +241,7 @@ CUDA_CALLABLE inline bool mesh_query_point(
 // returns true if there is a point (strictly) < distance max_dist
 CUDA_CALLABLE inline bool mesh_query_point_no_sign(
         uint64_t id, const vec3& point, float max_dist, int& face, float& u, float& v) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (mesh.bvh.num_nodes == 0) return false;
 
@@ -416,7 +411,7 @@ CUDA_CALLABLE inline bool mesh_query_point_sign_normal(uint64_t id,
                                                        float& u,
                                                        float& v,
                                                        const float epsilon = 1e-3f) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
     if (mesh.bvh.num_nodes == 0) return false;
     int stack[32];
     stack[0] = mesh.bvh.root;
@@ -615,7 +610,7 @@ CUDA_CALLABLE inline bool mesh_query_point_sign_normal(uint64_t id,
 }
 
 CUDA_CALLABLE inline float solid_angle_iterative(uint64_t id, const vec3& p, const float accuracy_sq) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
     if (mesh.bvh.num_nodes == 0) return 0.0f;
     int stack[32];
     int at_child[32];  // 0 for left, 1 for right, 2 for done
@@ -681,7 +676,7 @@ CUDA_CALLABLE inline float solid_angle_iterative(uint64_t id, const vec3& p, con
 
 CUDA_CALLABLE inline float mesh_query_winding_number(uint64_t id, const vec3& p, const float accuracy) {
     float angle = solid_angle_iterative(id, p, accuracy * accuracy);
-    return angle * 0.07957747154;  // divided by 4 PI
+    return angle * 0.07957747154f;  // divided by 4 PI
 }
 
 // returns true if there is a point (strictly) < distance max_dist
@@ -694,7 +689,7 @@ CUDA_CALLABLE inline bool mesh_query_point_sign_winding_number(uint64_t id,
                                                                float& v,
                                                                const float accuracy,
                                                                const float winding_number_threshold) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (mesh.bvh.num_nodes == 0) return false;
 
@@ -873,7 +868,7 @@ CUDA_CALLABLE inline bool mesh_query_ray(uint64_t id,
                                          float& sign,
                                          vec3& normal,
                                          int& face) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (mesh.bvh.num_nodes == 0) return false;
 
@@ -975,11 +970,11 @@ CUDA_CALLABLE inline float mesh_query_inside(uint64_t id, const vec3& p) {
 // stores state required to traverse the BVH nodes that
 // overlap with a query AABB.
 struct mesh_query_aabb_t {
-    CUDA_CALLABLE mesh_query_aabb_t() = default;
+    mesh_query_aabb_t() = default;
     CUDA_CALLABLE mesh_query_aabb_t(int) {}  // for backward pass
 
     // Mesh Id
-    Mesh mesh;
+    mesh_t mesh;
     // BVH traversal stack:
     int stack[32]{};
     int count{};
@@ -1000,7 +995,7 @@ CUDA_CALLABLE inline mesh_query_aabb_t mesh_query_aabb(uint64_t id, const vec3& 
     mesh_query_aabb_t query;
     query.face = -1;
 
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     query.mesh = mesh;
 
@@ -1052,7 +1047,7 @@ CUDA_CALLABLE inline mesh_query_aabb_t mesh_query_aabb(uint64_t id, const vec3& 
 }
 
 CUDA_CALLABLE inline bool mesh_query_aabb_next(mesh_query_aabb_t& query, int& index) {
-    Mesh mesh = query.mesh;
+    mesh_t mesh = query.mesh;
 
     wp::bounds3 input_bounds(query.input_lower, query.input_upper);
     // Navigate through the bvh, find the first overlapping leaf node.
@@ -1099,7 +1094,7 @@ CUDA_CALLABLE inline mesh_query_aabb_t iter_reverse(const mesh_query_aabb_t& que
 }
 
 CUDA_CALLABLE inline vec3 mesh_eval_position(uint64_t id, int tri, float u, float v) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.points) return vec3();
 
@@ -1117,7 +1112,7 @@ CUDA_CALLABLE inline vec3 mesh_eval_position(uint64_t id, int tri, float u, floa
 }
 
 CUDA_CALLABLE inline vec3 mesh_eval_velocity(uint64_t id, int tri, float u, float v) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.velocities) return vec3();
 
@@ -1135,7 +1130,7 @@ CUDA_CALLABLE inline vec3 mesh_eval_velocity(uint64_t id, int tri, float u, floa
 }
 
 CUDA_CALLABLE inline vec3 mesh_eval_face_normal(uint64_t id, int tri) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.points) return vec3();
 
@@ -1153,7 +1148,7 @@ CUDA_CALLABLE inline vec3 mesh_eval_face_normal(uint64_t id, int tri) {
 }
 
 CUDA_CALLABLE inline vec3 mesh_get_point(uint64_t id, int index) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.points) return vec3();
 
@@ -1169,7 +1164,7 @@ CUDA_CALLABLE inline vec3 mesh_get_point(uint64_t id, int index) {
 }
 
 CUDA_CALLABLE inline vec3 mesh_get_velocity(uint64_t id, int index) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.velocities) return vec3();
 
@@ -1185,7 +1180,7 @@ CUDA_CALLABLE inline vec3 mesh_get_velocity(uint64_t id, int index) {
 }
 
 CUDA_CALLABLE inline int mesh_get_index(uint64_t id, int face_vertex_index) {
-    Mesh mesh = mesh_get(id);
+    mesh_t mesh = mesh_get(id);
 
     if (!mesh.indices) return -1;
 
@@ -1193,9 +1188,5 @@ CUDA_CALLABLE inline int mesh_get_index(uint64_t id, int face_vertex_index) {
 
     return mesh.indices[face_vertex_index];
 }
-
-CUDA_CALLABLE bool mesh_get_descriptor(uint64_t id, Mesh& mesh);
-CUDA_CALLABLE void mesh_add_descriptor(uint64_t id, const Mesh& mesh);
-CUDA_CALLABLE void mesh_rem_descriptor(uint64_t id);
 
 }  // namespace wp

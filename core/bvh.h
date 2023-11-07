@@ -18,7 +18,7 @@ struct BVHPackedNodeHalf {
     unsigned int b : 1;
 };
 
-struct BVH {
+struct bvh_t {
     BVHPackedNodeHalf* node_lowers;
     BVHPackedNodeHalf* node_uppers;
 
@@ -39,21 +39,6 @@ struct BVH {
 
     void* context;
 };
-
-#if !defined(__CUDA_ARCH__)
-
-BVH bvh_create(const bounds3* bounds, int num_bounds);
-
-void bvh_destroy_host(BVH& bvh);
-void bvh_destroy_device(BVH& bvh);
-
-void bvh_refit_host(BVH& bvh, const bounds3* bounds);
-void bvh_refit_device(BVH& bvh, const bounds3* bounds);
-
-// copy host BVH to device
-BVH bvh_clone(void* context, const BVH& bvh_host);
-
-#endif  // !__CUDA_ARCH__
 
 CUDA_CALLABLE inline BVHPackedNodeHalf make_node(const vec3& bound, int child, bool leaf) {
     BVHPackedNodeHalf n{};
@@ -104,20 +89,20 @@ CUDA_CALLABLE inline uint32_t morton3(float x, float y, float z) {
 
 // making the class accessible from python
 
-CUDA_CALLABLE inline BVH bvh_get(uint64_t id) { return *(BVH*)(id); }
+CUDA_CALLABLE inline bvh_t bvh_get(uint64_t id) { return *(bvh_t*)(id); }
 
 CUDA_CALLABLE inline int bvh_get_num_bounds(uint64_t id) {
-    BVH bvh = bvh_get(id);
+    bvh_t bvh = bvh_get(id);
     return bvh.num_bounds;
 }
 
 // stores state required to traverse the BVH nodes that
 // overlap with a query AABB.
 struct bvh_query_t {
-    CUDA_CALLABLE bvh_query_t() = default;
+    bvh_query_t() = default;
     CUDA_CALLABLE bvh_query_t(int) {}  // for backward pass
 
-    BVH bvh{};
+    bvh_t bvh{};
 
     // BVH traversal stack:
     int stack[32]{};
@@ -140,7 +125,7 @@ CUDA_CALLABLE inline bvh_query_t bvh_query(uint64_t id, bool is_ray, const vec3&
 
     query.bounds_nr = -1;
 
-    BVH bvh = bvh_get(id);
+    bvh_t bvh = bvh_get(id);
 
     query.bvh = bvh;
     query.is_ray = is_ray;
@@ -209,15 +194,8 @@ CUDA_CALLABLE inline bvh_query_t bvh_query_ray(uint64_t id, const vec3& start, c
     return bvh_query(id, true, start, dir);
 }
 
-// Stub
-CUDA_CALLABLE inline void adj_bvh_query_aabb(
-        uint64_t id, const vec3& lower, const vec3& upper, uint64_t, vec3&, vec3&, bvh_query_t&) {}
-
-CUDA_CALLABLE inline void adj_bvh_query_ray(
-        uint64_t id, const vec3& start, const vec3& dir, uint64_t, vec3&, vec3&, bvh_query_t&) {}
-
 CUDA_CALLABLE inline bool bvh_query_next(bvh_query_t& query, int& index) {
-    BVH bvh = query.bvh;
+    bvh_t bvh = query.bvh;
 
     wp::bounds3 input_bounds(query.input_lower, query.input_upper);
 
@@ -270,12 +248,5 @@ CUDA_CALLABLE inline bvh_query_t iter_reverse(const bvh_query_t& query) {
     // can't reverse BVH queries, users should not rely on traversal ordering
     return query;
 }
-
-// stub
-CUDA_CALLABLE inline void adj_bvh_query_next(bvh_query_t& query, int& index, bvh_query_t&, int&, bool&) {}
-
-CUDA_CALLABLE bool bvh_get_descriptor(uint64_t id, BVH& bvh);
-CUDA_CALLABLE void bvh_add_descriptor(uint64_t id, const BVH& bvh);
-CUDA_CALLABLE void bvh_rem_descriptor(uint64_t id);
 
 }  // namespace wp
