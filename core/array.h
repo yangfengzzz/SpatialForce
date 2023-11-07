@@ -76,6 +76,27 @@ struct shape_t {
         assert(i < ARRAY_MAX_DIMS);
         return dims[i];
     }
+
+    CUDA_CALLABLE inline int size() {
+        return dims[0] * dims[1] * dims[2] * dims[3];
+    }
+
+    CUDA_CALLABLE inline int dim() {
+        int dim = 0;
+        if (dims[0] != 0) {
+            dim++;
+        }
+        if (dims[1] != 0) {
+            dim++;
+        }
+        if (dims[2] != 0) {
+            dim++;
+        }
+        if (dims[3] != 0) {
+            dim++;
+        }
+        return dim;
+    }
 };
 
 CUDA_CALLABLE inline int index(const shape_t& s, int i) { return s.dims[i]; }

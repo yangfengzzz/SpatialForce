@@ -13,16 +13,37 @@ namespace wp {
 template <typename T>
 class Array {
 public:
-    Array(Device& device, shape_t shape, uint32_t strides);
+    explicit Array(shape_t shape);
 
-    array_t<T> handle() { return handle_; }
+    ~Array();
+
+    const array_t<T>& handle() const { return handle_; }
+
+    array_t<T>& handle() { return handle_; }
 
 private:
-    Device& device_;
     array_t<T> handle_;
 };
 
 template <typename T>
-Array<T>::Array(Device& device, shape_t shape, uint32_t strides) : device_{device} {}
+Array<T>::Array(shape_t shape) {
+    auto capacity = shape.size() * sizeof(T);
+    auto ptr = Device::alloc(capacity);
+    switch (shape.dim()) {
+        case 1:
+            handle_ = array_t<T>(ptr, shape.dims[0]);
+        case 2:
+            handle_ = array_t<T>(ptr, shape.dims[0], shape.dims[1]);
+        case 3:
+            handle_ = array_t<T>(ptr, shape.dims[0], shape.dims[1], shape.dims[2]);
+        case 4:
+            handle_ = array_t<T>(ptr, shape.dims[0], shape.dims[1], shape.dims[2], shape.dims[3]);
+    }
+}
+
+template <typename T>
+Array<T>::~Array() {
+    Device::free(handle_.data);
+}
 
 }  // namespace wp

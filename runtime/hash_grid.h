@@ -22,7 +22,7 @@ public:
 
     void reserve(int num_points);
 
-    void update(float cell_width, const wp::vec3* positions, int num_points);
+    void update(float cell_width, const Array<wp::vec3>& positions, int num_points);
 
 private:
     Stream& stream_;
@@ -30,6 +30,6 @@ private:
     hash_grid_t handle_;
     uint64_t grid_id_;
 
-    void rebuild(const wp::vec3* points, int num_points);
+    void rebuild(const Array<wp::vec3>& points, int num_points);
 };
 }  // namespace wp

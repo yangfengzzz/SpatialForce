@@ -93,7 +93,7 @@ void HashGrid::reserve(int num_points) {
     }
 }
 
-void HashGrid::update(float cell_width, const wp::vec3* positions, int num_points) {
+void HashGrid::update(float cell_width, const Array<wp::vec3>& positions, int num_points) {
     // ensure we have enough memory reserved for update
     // this must be done before retrieving the descriptor
     // below since it may update it
@@ -109,8 +109,8 @@ void HashGrid::update(float cell_width, const wp::vec3* positions, int num_point
     stream_.memcpy_h2d((HashGrid*)grid_id_, &handle_, sizeof(HashGrid));
 }
 
-void HashGrid::rebuild(const wp::vec3* points, int num_points) {
-    wp_launch_device(nullptr, wp::compute_cell_indices, num_points, (handle_, points, num_points));
+void HashGrid::rebuild(const Array<wp::vec3>& points, int num_points) {
+    wp_launch_device(nullptr, wp::compute_cell_indices, num_points, (handle_, points.handle(), num_points));
 
     sort_.sort_pairs(handle_.point_cells, handle_.point_ids, num_points);
 
