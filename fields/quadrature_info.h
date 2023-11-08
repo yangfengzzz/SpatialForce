@@ -11,19 +11,19 @@
 namespace wp {
 namespace fields {
 
-template <uint32_t DIM>
+template <uint32_t dim>
 struct quadrature_info_t {
     /// Algebraic accuracy.
     int32_t alg_acc{};
     /// The coordinate of quadrature point.
-    array_t<vec3> pnts;
+    array_t<vec_t<dim, float>> pnts;
     /// Quadrature weight on the point.
     array_t<float> weights;
 };
 
-template <uint32_t DIM>
+template <uint32_t dim>
 struct quadrature_info_admin_t {
-    array_t<quadrature_info_t<DIM>> infos;
+    array_t<quadrature_info_t<dim>> infos;
     /// Algebraic accuracy table.
     array_t<int32_t> acc_tbl;
 };

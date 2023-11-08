@@ -15,15 +15,15 @@ namespace fields {
 /// The data structure of a mesh. The class \p Mesh administrate a set of points and
 /// a set of geometries. The geometries are organized according its dimension and stored
 /// in arrays. A lot of mechanism provided to retrieve information from the mesh.
-template <uint32_t DIM, uint32_t DOW>
+template <uint32_t dim, uint32_t dow>
 class mesh_t {
     /// Point array of the mesh.
-    array_t<vec3> pnt;
+    array_t<vec_t<dow, float>> pnt;
 
     /// Geometries arrays of the mesh.
     /// The geometries in \p n dimension are in the \p n-th entry of the array,
     /// which is still an array.
-    array_t<array_t<geometry_bm_t>> geo;
+    array_t<geometry_bm_t> geo[dim + 1];
 };
 
 /// Template geometry is the geometry information of a template element. A template
@@ -31,10 +31,10 @@ class mesh_t {
 /// about how to calculate its volume. Such a function is stored in a shared library.
 /// The user should provide such a shared library and tell this class about the file
 /// name of the shared library and the function name to calculate the volume.
-template <uint32_t DIM>
-class template_geometry_t : public mesh_t<DIM, DIM> {
+template <uint32_t dim>
+class template_geometry_t : public mesh_t<dim, dim> {
     /// The quadrature information on the geometry.
-    quadrature_info_admin_t<DIM> quad_info;
+    quadrature_info_admin_t<dim> quad_info;
 };
 
 }  // namespace fields
