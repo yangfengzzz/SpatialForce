@@ -10,6 +10,7 @@ project(fields LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
         geometry.h
+        mesh.h
         tmp.cu
 )
 
