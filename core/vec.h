@@ -16,7 +16,7 @@ struct vec_t {
 
     inline vec_t() = default;
 
-    inline CUDA_CALLABLE vec_t(Type s) {
+    inline CUDA_CALLABLE constexpr vec_t(Type s) {
         for (unsigned i = 0; i < Length; ++i) {
             c[i] = s;
         }
@@ -29,20 +29,20 @@ struct vec_t {
         }
     }
 
-    inline CUDA_CALLABLE vec_t(Type x, Type y) {
+    inline CUDA_CALLABLE constexpr vec_t(Type x, Type y) {
         assert(Length == 2);
         c[0] = x;
         c[1] = y;
     }
 
-    inline CUDA_CALLABLE vec_t(Type x, Type y, Type z) {
+    inline CUDA_CALLABLE constexpr vec_t(Type x, Type y, Type z) {
         assert(Length == 3);
         c[0] = x;
         c[1] = y;
         c[2] = z;
     }
 
-    inline CUDA_CALLABLE vec_t(Type x, Type y, Type z, Type w) {
+    inline CUDA_CALLABLE constexpr vec_t(Type x, Type y, Type z, Type w) {
         assert(Length == 4);
         c[0] = x;
         c[1] = y;
@@ -50,14 +50,14 @@ struct vec_t {
         c[3] = w;
     }
 
-    inline CUDA_CALLABLE vec_t(const initializer_array<Length, Type>& l) {
+    inline CUDA_CALLABLE constexpr vec_t(const initializer_array<Length, Type>& l) {
         for (unsigned i = 0; i < Length; ++i) {
             c[i] = l[i];
         }
     }
 
     // special screw vector constructor for spatial_vectors:
-    inline CUDA_CALLABLE vec_t(vec_t<3, Type> w, vec_t<3, Type> v) {
+    inline CUDA_CALLABLE constexpr vec_t(vec_t<3, Type> w, vec_t<3, Type> v) {
         c[0] = w[0];
         c[1] = w[1];
         c[2] = w[2];
@@ -66,12 +66,12 @@ struct vec_t {
         c[5] = v[2];
     }
 
-    inline CUDA_CALLABLE Type operator[](int index) const {
+    inline CUDA_CALLABLE constexpr Type operator[](int index) const {
         assert(index < Length);
         return c[index];
     }
 
-    inline CUDA_CALLABLE Type& operator[](int index) {
+    inline CUDA_CALLABLE constexpr Type& operator[](int index) {
         assert(index < Length);
         return c[index];
     }

@@ -8,8 +8,7 @@
 
 #include "core/array.h"
 
-namespace wp {
-namespace fields {
+namespace wp::fields {
 /// the data to describe a geometry.
 struct geometry_t {
     /// Index of the geometry.
@@ -31,5 +30,15 @@ struct geometry_bm_t : public geometry_t {
     bmark_t bm{};
 };
 
-}  // namespace fields
-}  // namespace wp
+template<uint32_t SIZE>
+struct static_geometry_t {
+    static constexpr uint32_t size = SIZE;
+    /// Index of the geometry.
+    int32_t ind{};
+    /// Index of vertices.
+    uint32_t vtx[size]{};
+    /// Index of boundary geometries.
+    uint32_t bnd[size]{};
+};
+
+}// namespace wp::fields

@@ -37,7 +37,6 @@ if (CUDA_FOUND)
     set(CMAKE_CUDA_ARCHITECTURES 86)
     enable_language(CUDA)
     include_directories(${CUDA_INCLUDE_DIRS})
-    list(APPEND CUDA_NVCC_FLAGS --std=c++20)
 endif ()
 
 # Add third party libraries
