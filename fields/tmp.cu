@@ -1,6 +1,5 @@
 #include "geometry.h"
 #include "mesh.h"
-#include "quadrature_info.h"
 #include "template_geometry.h"
 #include <iostream>
 

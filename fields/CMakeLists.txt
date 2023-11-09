@@ -10,6 +10,9 @@ project(fields LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
         geometry.h
+        geometry_trait.h
+        template_geometry.h
+        templates/interval.h
         mesh.h
         tmp.cu
 )
@@ -18,9 +21,6 @@ source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
-        geometry_trait.h
-        template_geometry.h
-        templates/interval.h
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})

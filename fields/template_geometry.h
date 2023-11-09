@@ -8,7 +8,6 @@
 
 #include "geometry.h"
 #include "geometry_trait.h"
-#include "quadrature_info.h"
 
 namespace wp::fields {
 template<typename TYPE>
@@ -16,6 +15,18 @@ struct base_template_geometry_t {};
 
 template<typename TYPE, uint32_t ACCURACY>
 struct template_geometry_t : public base_template_geometry_t<TYPE> {};
+
+template<uint32_t DIM, uint32_t SIZE>
+struct quadrature_info_t {
+    static constexpr uint32_t dim = DIM;
+    static constexpr uint32_t size = SIZE;
+    /// Algebraic accuracy.
+    int32_t alg_acc{};
+    /// The coordinate of quadrature point.
+    vec_t<dim, float> pnts[size];
+    /// Quadrature weight on the point.
+    float weights[size]{};
+};
 
 }// namespace wp::fields
 

@@ -8,7 +8,6 @@
 
 #include "core/vec.h"
 #include "fields/geometry.h"
-#include "fields/quadrature_info.h"
 
 namespace wp::fields {
 /// The data structure of a mesh. The class \p Mesh administrate a set of points and

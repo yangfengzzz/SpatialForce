@@ -10,7 +10,7 @@ namespace wp::fields {
 template<>
 struct base_template_geometry_t<Interval> {
     static constexpr uint32_t dim = Interval::dim;
-    using point_t = vec_t<dim, float>;
+    using point_t = Interval::point_t;
     static constexpr uint32_t n_point = 2;
     static constexpr point_t pnt[n_point]{point_t{0}, point_t{1}};
     static constexpr auto point(uint32_t index) {
@@ -54,7 +54,7 @@ struct base_template_geometry_t<Interval> {
 template<>
 struct template_geometry_t<Interval, 1> : public base_template_geometry_t<Interval> {
     static constexpr uint32_t n_quad_size = 1;
-    static constexpr static_quadrature_info_t<dim, n_quad_size> quadrature_info{
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
         .alg_acc = 1,
         .pnts = {point_t{0}},
         .weights = {1.0}};
