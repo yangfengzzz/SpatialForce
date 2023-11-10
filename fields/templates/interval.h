@@ -59,4 +59,112 @@ struct template_geometry_t<Interval, 1> : public base_template_geometry_t<Interv
         .pnts = {point_t{0}},
         .weights = {1.0}};
 };
+
+template<>
+struct template_geometry_t<Interval, 2> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 2;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 2,
+        .pnts = {point_t{-0.577350269189626}, point_t{0.577350269189626}},
+        .weights = {0.5, 0.5}};
+};
+
+template<>
+struct template_geometry_t<Interval, 3> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 3;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 3,
+        .pnts = {{-0.774596669241483}, {0}, {0.774596669241483}},
+        .weights = {0.277777777777778, 0.444444444444444, 0.277777777777778}};
+};
+
+template<>
+struct template_geometry_t<Interval, 4> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 4;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 4,
+        .pnts = {{-0.861136311594053}, {-0.339981043584856}, {0.339981043584856}, {0.861136311594053}},
+        .weights = {0.173927422568727, 0.326072577431273, 0.326072577431273, 0.173927422568727}};
+};
+
+template<>
+struct template_geometry_t<Interval, 5> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 5;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 5,
+        .pnts = {{-0.906179845938664}, {-0.538469310105683}, {0}, {0.538469310105683}, {0.906179845938664}},
+        .weights = {0.118463442528095, 0.239314335249683, 0.284444444444444, 0.239314335249683, 0.118463442528095}};
+};
+
+template<>
+struct template_geometry_t<Interval, 6> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 6;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 6,
+        .pnts = {{-0.932469514203152}, {-0.661209386466264}, {-0.238619186083197},//
+                 {0.238619186083197},
+                 {0.661209386466264},
+                 {0.932469514203152}},
+        .weights = {0.0856622461895852, 0.180380786524069, 0.233956967286346,
+                    0.233956967286346, 0.180380786524069, 0.0856622461895852}};
+};
+
+template<>
+struct template_geometry_t<Interval, 7> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 7;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 7,
+        .pnts = {{-0.949107912342758}, {-0.741531185599394}, {-0.405845151377397}, {0},//
+                 {0.405845151377397},
+                 {0.741531185599394},
+                 {0.949107912342758}},
+        .weights = {0.0647424830844349, 0.139852695744638, 0.190915025252559,
+                    0.208979591836735, 0.190915025252559, 0.139852695744638, 0.0647424830844349}};
+};
+
+template<>
+struct template_geometry_t<Interval, 8> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 8;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 8,
+        .pnts = {{-0.960289856497536}, {-0.796666477413627}, {-0.525532409916329}, {-0.18343464249565},//
+                 {0.18343464249565},
+                 {0.525532409916329},
+                 {0.796666477413627},
+                 {0.960289856497536}},
+        .weights = {0.0506142681451881, 0.111190517226687, 0.156853322938944, 0.181341891689181,
+                    0.181341891689181, 0.156853322938944, 0.111190517226687, 0.0506142681451881}};
+};
+
+template<>
+struct template_geometry_t<Interval, 9> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 9;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 9,
+        .pnts = {{-0.968160239507626}, {-0.836031107326636}, {-0.61337143270059}, {-0.324253423403809},//
+                 {0},
+                 {0.324253423403809},
+                 {0.61337143270059},
+                 {0.836031107326636},
+                 {0.968160239507626}},
+        .weights = {0.0406371941807872, 0.0903240803474287, 0.130305348201468, 0.156173538520001, 0.16511967750063,
+                    0.156173538520001, 0.130305348201468, 0.0903240803474287, 0.0406371941807872}};
+};
+
+template<>
+struct template_geometry_t<Interval, 10> : public base_template_geometry_t<Interval> {
+    static constexpr uint32_t n_quad_size = 10;
+    static constexpr quadrature_info_t<dim, n_quad_size> quadrature_info{
+        .alg_acc = 10,
+        .pnts = {{-0.973906528517172}, {-0.865063366688985}, {-0.679409568299024}, {-0.433395394129247},//
+                 {-0.148874338981631},
+                 {0.148874338981631},
+                 {0.433395394129247},
+                 {0.679409568299024},
+                 {0.865063366688985},
+                 {0.973906528517172}},
+        .weights = {0.0333356721543441, 0.0747256745752903, 0.109543181257991, 0.134633359654998, 0.147762112357376,
+                    0.147762112357376, 0.134633359654998, 0.109543181257991, 0.0747256745752903, 0.0333356721543441}};
+};
+
 }// namespace wp::fields

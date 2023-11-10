@@ -13,6 +13,10 @@ struct Interval {
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return (v[1][0] - v[0][0]);
+    }
+
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[2];
         lambda[0] = (lv[1][0] - lp[0]) / (lv[1][0] - lv[0][0]);
@@ -41,6 +45,10 @@ struct IntervalTo2D {
     static constexpr uint32_t tdim = 2;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return (v[1][0] - v[0][0]);
+    }
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[2];
@@ -78,6 +86,10 @@ struct Triangle {
     CUDA_CALLABLE static constexpr float area(point_t a, point_t b, point_t c) {
         return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
     }
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return .5f * ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]));
+    };
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[3];
@@ -117,6 +129,10 @@ struct TriangleTo3D {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return .5f * ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]));
+    };
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[3];
@@ -179,6 +195,11 @@ struct TwinTriangle {
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return .5f * ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) -
+                      (v[3][0] - v[0][0]) * (v[1][1] - v[0][1]));
+    }
+
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         static int _[6] = {0, 1, 2, 0, 2, 3};
         float lambda[3], chi = Triangle::area(lp, lv[0], lv[2]);
@@ -228,6 +249,11 @@ struct TwinTriangleTo3D {
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return .5f * ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) -
+                      (v[3][0] - v[0][0]) * (v[1][1] - v[0][1]));
+    }
+
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[3];
         float area = Triangle::area(lv[0], lv[1], lv[3]);
@@ -274,6 +300,10 @@ struct Oblong {
 
     CUDA_CALLABLE static float det(const point_t v1, const point_t v2) { return v1[0] * v2[1] - v1[1] * v2[0]; }
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return 1.f;
+    };
+
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float a[3];
         a[0] = .5f * (-lp[0] - lp[1]);
@@ -317,6 +347,10 @@ struct OblongTo3D {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return 1.f;
+    };
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float a[3];
@@ -375,6 +409,10 @@ struct Tetrahedron {
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) * (v[3][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[2][2] - v[0][2]) * (v[3][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[2][0] - v[0][0]) * (v[3][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[2][2] - v[0][2]) * (v[3][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]) * (v[3][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[2][1] - v[0][1]) * (v[3][0] - v[0][0])) / 6.f;
+    };
+
     CUDA_CALLABLE static float get_volume(const point_t v0, const point_t v1, const point_t v2, const point_t v3) {
         return ((v1[0] - v0[0]) * (v2[1] - v0[1]) * (v3[2] - v0[2]) + (v1[1] - v0[1]) * (v2[2] - v0[2]) * (v3[0] - v0[0]) +
                 (v1[2] - v0[2]) * (v2[0] - v0[0]) * (v3[1] - v0[1]) - (v1[0] - v0[0]) * (v2[2] - v0[2]) * (v3[1] - v0[1]) -
@@ -425,6 +463,10 @@ struct TwinTetrahedron {
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
 
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) * (v[4][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[3][2] - v[0][2]) * (v[4][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[3][0] - v[0][0]) * (v[4][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[3][2] - v[0][2]) * (v[4][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[3][0] - v[0][0]) * (v[4][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[3][1] - v[0][1]) * (v[4][0] - v[0][0])) / 6.f;
+    };
+
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[4];
         float volume = Tetrahedron::get_volume(lv[0], lv[1], lv[3], lv[4]);
@@ -467,6 +509,10 @@ struct FourTetrahedron {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) * (v[3][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[2][2] - v[0][2]) * (v[3][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[2][0] - v[0][0]) * (v[3][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[2][2] - v[0][2]) * (v[3][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]) * (v[3][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[2][1] - v[0][1]) * (v[3][0] - v[0][0])) / 6.f;
+    };
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float lambda[4];
@@ -526,6 +572,10 @@ struct Recthexa {
         return v1[0] * v2[1] * v3[2] + v1[1] * v2[2] * v3[0] + v1[2] * v2[0] * v3[1] - v1[0] * v2[2] * v3[1] -
                v1[1] * v2[0] * v3[2] - v1[2] * v2[1] * v3[0];
     }
+
+    CUDA_CALLABLE static float volume(point_t *v) {
+        return 1.;
+    };
 
     CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
         float a[4];

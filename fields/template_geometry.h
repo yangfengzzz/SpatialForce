@@ -31,3 +31,4 @@ struct quadrature_info_t {
 }// namespace wp::fields
 
 #include "templates/interval.h"
+#include "templates/triangle.h"

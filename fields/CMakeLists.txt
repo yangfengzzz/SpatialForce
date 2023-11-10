@@ -21,6 +21,7 @@ source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
+        templates/triangle.h
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})
