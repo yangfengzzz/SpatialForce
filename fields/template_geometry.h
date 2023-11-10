@@ -14,7 +14,9 @@ template<typename TYPE>
 struct base_template_geometry_t {};
 
 template<typename TYPE, uint32_t ACCURACY>
-struct template_geometry_t : public base_template_geometry_t<TYPE> {};
+struct template_geometry_t : public base_template_geometry_t<TYPE> {
+    static constexpr uint32_t accuracy = ACCURACY;
+};
 
 template<uint32_t DIM, uint32_t SIZE>
 struct quadrature_info_t {
@@ -32,3 +34,4 @@ struct quadrature_info_t {
 
 #include "templates/interval.h"
 #include "templates/triangle.h"
+#include "templates/tetrahedron.h"

@@ -13,6 +13,8 @@ set(COMMON_FILES
         geometry_trait.h
         template_geometry.h
         templates/interval.h
+        templates/triangle.h
+        templates/tetrahedron.h
         mesh.h
         tmp.cu
 )
@@ -21,7 +23,6 @@ source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
-        templates/triangle.h
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})

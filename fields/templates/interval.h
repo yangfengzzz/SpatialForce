@@ -29,12 +29,14 @@ struct base_template_geometry_t<Interval> {
             .vtx = {1},
             .bnd = {1},
         }};
+
     static constexpr uint32_t n_geometry_dim1 = 1;
     static constexpr static_geometry_t<2> geometry_dim1[n_geometry_dim1]{static_geometry_t<2>{
         .ind = 0,
         .vtx = {0, 1},
         .bnd = {0, 1},
     }};
+
     static constexpr auto n_geometry(uint32_t index) {
         if (index == 0) {
             return n_geometry_dim0;
