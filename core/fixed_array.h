@@ -11,13 +11,11 @@
 namespace wp {
 template<typename T, size_t N>
 struct fixed_array_t {
+    static constexpr uint32_t size = N;
+
     using value_type = T;
     using reference = T &;
     using const_reference = const T &;
-    using pointer = T *;
-    using const_pointer = const T *;
-    using iterator = pointer;
-    using const_iterator = const_pointer;
 
     CUDA_CALLABLE constexpr fixed_array_t();
 

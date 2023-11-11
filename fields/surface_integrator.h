@@ -27,8 +27,8 @@ struct SurfaceIntegrator {
             arr[i] = mesh.pnt[mesh.geo[tdim - 1][index].vertex(i)];
         }
 
-        constexpr uint32_t n_quad_size = TemplateGeomtry::n_quad_size;
         constexpr auto quadrature_info = TemplateGeomtry::quadrature_info();
+        constexpr uint32_t n_quad_size = quadrature_info.size;
         constexpr auto template_points = TemplateGeomtry::points();
         typename FUNCTOR::RETURN_TYPE result{};
         for (uint32_t i = 0; i < n_quad_size; i++) {

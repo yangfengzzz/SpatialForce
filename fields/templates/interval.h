@@ -12,53 +12,40 @@ struct base_template_geometry_t<Interval> {
     using base = Interval;
     static constexpr uint32_t dim = Interval::dim;
     using point_t = Interval::point_t;
-    static constexpr uint32_t n_point = 2;
-    CUDA_CALLABLE static constexpr fixed_array_t<point_t, n_point> points() {
-        return {point_t{0},
-                point_t{1}};
+
+    CUDA_CALLABLE static constexpr auto points() {
+        return fixed_array_t<point_t, 2>{point_t{0},
+                                         point_t{1}};
     }
 
-    static constexpr uint32_t n_geometry_dim0 = 2;
-    static constexpr static_geometry_t<1> geometry_dim0[n_geometry_dim0]{
-        static_geometry_t<1>{
-            .ind = 0,
-            .vtx = {0},
-            .bnd = {0},
-        },
-        static_geometry_t<1>{
-            .ind = 1,
-            .vtx = {1},
-            .bnd = {1},
-        }};
-
-    static constexpr uint32_t n_geometry_dim1 = 1;
-    static constexpr static_geometry_t<2> geometry_dim1[n_geometry_dim1]{static_geometry_t<2>{
-        .ind = 0,
-        .vtx = {0, 1},
-        .bnd = {0, 1},
-    }};
-
-    CUDA_CALLABLE static constexpr auto n_geometry(uint32_t index) {
-        if (index == 0) {
-            return n_geometry_dim0;
-        } else {
-            return n_geometry_dim1;
-        }
+    CUDA_CALLABLE static constexpr auto geometry_dim0() {
+        return fixed_array_t<static_geometry_t<1>, 2>{
+            static_geometry_t<1>{
+                .ind = 0,
+                .vtx = {0},
+                .bnd = {0},
+            },
+            static_geometry_t<1>{
+                .ind = 1,
+                .vtx = {1},
+                .bnd = {1},
+            }};
     }
-    CUDA_CALLABLE static constexpr auto n_vertex(uint32_t level) {
-        if (level == 0) {
-            return wp::fields::static_geometry_t<1>::size;
-        } else {
-            return wp::fields::static_geometry_t<2>::size;
-        }
+
+    CUDA_CALLABLE static constexpr auto geometry_dim1() {
+        return fixed_array_t<static_geometry_t<2>, 1>{
+            static_geometry_t<2>{
+                .ind = 0,
+                .vtx = {0, 1},
+                .bnd = {0, 1},
+            }};
     }
 };
 
 template<>
 struct template_geometry_t<Interval, 1> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 1;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 1>{
             .alg_acc = 1,
             .pnts = {point_t{0}},
             .weights = {1.0}};
@@ -67,9 +54,8 @@ struct template_geometry_t<Interval, 1> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 2> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 2;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 2>{
             .alg_acc = 2,
             .pnts = {point_t{-0.577350269189626},
                      point_t{0.577350269189626}},
@@ -79,9 +65,8 @@ struct template_geometry_t<Interval, 2> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 3> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 3;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 3>{
             .alg_acc = 3,
             .pnts = {point_t{-0.774596669241483},
                      point_t{0},
@@ -92,9 +77,8 @@ struct template_geometry_t<Interval, 3> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 4> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 4;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 4>{
             .alg_acc = 4,
             .pnts = {point_t{-0.861136311594053},
                      point_t{-0.339981043584856},
@@ -106,9 +90,8 @@ struct template_geometry_t<Interval, 4> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 5> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 5;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 5>{
             .alg_acc = 5,
             .pnts = {point_t{-0.906179845938664},
                      point_t{-0.538469310105683},
@@ -121,9 +104,8 @@ struct template_geometry_t<Interval, 5> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 6> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 6;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 6>{
             .alg_acc = 6,
             .pnts = {point_t{-0.932469514203152},
                      point_t{-0.661209386466264},
@@ -138,9 +120,8 @@ struct template_geometry_t<Interval, 6> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 7> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 7;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 7>{
             .alg_acc = 7,
             .pnts = {point_t{-0.949107912342758},
                      point_t{-0.741531185599394},
@@ -156,9 +137,8 @@ struct template_geometry_t<Interval, 7> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 8> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 8;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 8>{
             .alg_acc = 8,
             .pnts = {point_t{-0.960289856497536},
                      point_t{-0.796666477413627},
@@ -175,9 +155,8 @@ struct template_geometry_t<Interval, 8> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 9> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 9;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 9>{
             .alg_acc = 9,
             .pnts = {point_t{-0.968160239507626},
                      point_t{-0.836031107326636},
@@ -195,9 +174,8 @@ struct template_geometry_t<Interval, 9> : public base_template_geometry_t<Interv
 
 template<>
 struct template_geometry_t<Interval, 10> : public base_template_geometry_t<Interval> {
-    static constexpr uint32_t n_quad_size = 10;
     CUDA_CALLABLE static constexpr auto quadrature_info() {
-        return quadrature_info_t<dim, n_quad_size>{
+        return quadrature_info_t<dim, 10>{
             .alg_acc = 10,
             .pnts = {point_t{-0.973906528517172},
                      point_t{-0.865063366688985},
