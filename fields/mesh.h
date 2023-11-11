@@ -14,7 +14,7 @@ namespace wp::fields {
 /// a set of geometries. The geometries are organized according its dimension and stored
 /// in arrays. A lot of mechanism provided to retrieve information from the mesh.
 template<uint32_t dim, uint32_t dow>
-class mesh_t {
+struct mesh_t {
     /// Point array of the mesh.
     array_t<vec_t<dow, float>> pnt;
 

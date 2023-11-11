@@ -7,11 +7,25 @@
 #pragma once
 
 namespace wp::fields {
+struct Interval;
+struct IntervalTo2D;
+struct Triangle;
+struct TriangleTo3D;
+struct TwinTriangle;
+struct TwinTriangleTo3D;
+struct Oblong;
+struct OblongTo3D;
+struct Tetrahedron;
+struct TwinTetrahedron;
+struct FourTetrahedron;
+struct Recthexa;
+
 struct Interval {
     static constexpr uint32_t dim = 1;
     static constexpr uint32_t tdim = 1;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 2;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return (v[1][0] - v[0][0]);
@@ -45,8 +59,10 @@ struct IntervalTo2D {
     static constexpr uint32_t tdim = 2;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    using associate_t = Interval;
+    static constexpr uint32_t arr_len = 2;
 
-    CUDA_CALLABLE static float volume(point_t *v) {
+    CUDA_CALLABLE static float volume(const point_t *v) {
         return (v[1][0] - v[0][0]);
     }
 
@@ -82,6 +98,7 @@ struct Triangle {
     static constexpr uint32_t tdim = 2;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 3;
 
     CUDA_CALLABLE static constexpr float area(point_t a, point_t b, point_t c) {
         return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
@@ -129,6 +146,8 @@ struct TriangleTo3D {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    using associate_t = Triangle;
+    static constexpr uint32_t arr_len = 3;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return .5f * ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]));
@@ -194,6 +213,7 @@ struct TwinTriangle {
     static constexpr uint32_t tdim = 2;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 4;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return .5f * ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) -
@@ -248,6 +268,8 @@ struct TwinTriangleTo3D {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    using associate_t = TwinTriangle;
+    static constexpr uint32_t arr_len = 4;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return .5f * ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) -
@@ -291,6 +313,7 @@ struct Oblong {
     static constexpr uint32_t tdim = 2;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 4;
 
 #define COPY_TO_A                  \
     a[0][0] = gv[1][0] - gv[0][0]; \
@@ -347,6 +370,8 @@ struct OblongTo3D {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    using associate_t = Oblong;
+    static constexpr uint32_t arr_len = 4;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return 1.f;
@@ -408,6 +433,7 @@ struct Tetrahedron {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 4;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) * (v[3][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[2][2] - v[0][2]) * (v[3][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[2][0] - v[0][0]) * (v[3][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[2][2] - v[0][2]) * (v[3][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]) * (v[3][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[2][1] - v[0][1]) * (v[3][0] - v[0][0])) / 6.f;
@@ -462,6 +488,7 @@ struct TwinTetrahedron {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 5;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return ((v[1][0] - v[0][0]) * (v[3][1] - v[0][1]) * (v[4][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[3][2] - v[0][2]) * (v[4][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[3][0] - v[0][0]) * (v[4][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[3][2] - v[0][2]) * (v[4][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[3][0] - v[0][0]) * (v[4][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[3][1] - v[0][1]) * (v[4][0] - v[0][0])) / 6.f;
@@ -509,6 +536,7 @@ struct FourTetrahedron {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 4;
 
     CUDA_CALLABLE static float volume(point_t *v) {
         return ((v[1][0] - v[0][0]) * (v[2][1] - v[0][1]) * (v[3][2] - v[0][2]) + (v[1][1] - v[0][1]) * (v[2][2] - v[0][2]) * (v[3][0] - v[0][0]) + (v[1][2] - v[0][2]) * (v[2][0] - v[0][0]) * (v[3][1] - v[0][1]) - (v[1][0] - v[0][0]) * (v[2][2] - v[0][2]) * (v[3][1] - v[0][1]) - (v[1][1] - v[0][1]) * (v[2][0] - v[0][0]) * (v[3][2] - v[0][2]) - (v[1][2] - v[0][2]) * (v[2][1] - v[0][1]) * (v[3][0] - v[0][0])) / 6.f;
@@ -556,6 +584,7 @@ struct Recthexa {
     static constexpr uint32_t tdim = 3;
     using point_t = vec_t<dim, float>;
     using ref_point_t = vec_t<tdim, float>;
+    static constexpr uint32_t arr_len = 5;
 
 #define COPY_TO_A                  \
     a[0][0] = gv[1][0] - gv[0][0]; \

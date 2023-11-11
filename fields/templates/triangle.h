@@ -9,6 +9,7 @@
 namespace wp::fields {
 template<>
 struct base_template_geometry_t<Triangle> {
+    using base = Triangle;
     static constexpr uint32_t dim = Triangle::dim;
     using point_t = Triangle::point_t;
     static constexpr uint32_t n_point = 3;

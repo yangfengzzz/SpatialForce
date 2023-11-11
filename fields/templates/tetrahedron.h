@@ -9,6 +9,7 @@
 namespace wp::fields {
 template<>
 struct base_template_geometry_t<Tetrahedron> {
+    using base = Tetrahedron;
     static constexpr uint32_t dim = Tetrahedron::dim;
     using point_t = Tetrahedron::point_t;
     static constexpr uint32_t n_point = 4;
