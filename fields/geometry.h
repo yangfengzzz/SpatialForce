@@ -7,6 +7,7 @@
 #pragma once
 
 #include "core/array.h"
+#include "core/fixed_array.h"
 
 namespace wp::fields {
 /// the data to describe a geometry.
@@ -36,9 +37,9 @@ struct static_geometry_t {
     /// Index of the geometry.
     int32_t ind{};
     /// Index of vertices.
-    uint32_t vtx[size]{};
+    fixed_array_t<uint32_t, size> vtx{};
     /// Index of boundary geometries.
-    uint32_t bnd[size]{};
+    fixed_array_t<uint32_t, size> bnd{};
 };
 
 }// namespace wp::fields

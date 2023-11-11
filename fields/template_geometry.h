@@ -25,9 +25,9 @@ struct quadrature_info_t {
     /// Algebraic accuracy.
     int32_t alg_acc{};
     /// The coordinate of quadrature point.
-    vec_t<dim, float> pnts[size];
+    fixed_array_t<vec_t<dim, float>, size> pnts;
     /// Quadrature weight on the point.
-    float weights[size]{};
+    fixed_array_t<float, size> weights;
 };
 
 }// namespace wp::fields

@@ -33,9 +33,9 @@ struct SurfaceIntegrator {
         typename FUNCTOR::RETURN_TYPE result{};
         for (uint32_t i = 0; i < n_quad_size; i++) {
             auto quad_pt = quadrature_info.pnts[i];
-            auto pt = CoordTransform::local_to_global(quad_pt, template_points.pnts, arr);
-            auto jxw = CoordTransform::local_to_global_jacobian(quad_pt, template_points.pnts, arr);
-            jxw *= quadrature_info.weights[i] * CoordTransform::volume(template_points.pnts);
+            auto pt = CoordTransform::local_to_global(quad_pt, template_points.data, arr);
+            auto jxw = CoordTransform::local_to_global_jacobian(quad_pt, template_points.data, arr);
+            jxw *= quadrature_info.weights[i] * CoordTransform::volume(template_points.data);
             result += jxw * functor(pt);
         }
 

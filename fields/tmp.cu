@@ -6,7 +6,7 @@
 
 namespace wp::fields {
 void test() {
-    for (auto &pnt : template_geometry_t<Interval, 6>::quadrature_info().pnts) {
+    for (auto &pnt : template_geometry_t<Interval, 6>::quadrature_info().pnts.data) {
         std::cout << pnt[0] << std::endl;
     }
 }

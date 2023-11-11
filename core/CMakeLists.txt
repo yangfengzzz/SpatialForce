@@ -17,6 +17,7 @@ set(COMMON_FILES
         mat.h
         quat.h
         array.h
+        fixed_array.h
         fabric.h
         spatial.h
         rand.h
