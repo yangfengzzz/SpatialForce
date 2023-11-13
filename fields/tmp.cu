@@ -4,12 +4,15 @@
 #include "surface_integrator.h"
 #include "volume_integrator.h"
 #include <iostream>
+#include "grid.h"
 
 namespace wp::fields {
 void test() {
     for (auto &pnt : template_geometry_t<Interval, 6>::quadrature_info().pnts.data) {
         std::cout << pnt[0] << std::endl;
     }
+    mesh_t<1, 1> mesh{};
+    mesh.geometry(0, 0);
 }
 
 void test2() {

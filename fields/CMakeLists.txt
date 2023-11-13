@@ -19,10 +19,16 @@ set(COMMON_FILES
         tmp.cu
 )
 
+set(HOST_FILES
+        host/grid.h
+        host/grid.cu
+)
+
 source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
+        ${HOST_FILES}
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})
