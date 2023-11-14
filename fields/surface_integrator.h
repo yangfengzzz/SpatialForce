@@ -24,7 +24,7 @@ struct SurfaceIntegrator {
         vec_t<tdim, float> arr[arr_len];
         for (uint32_t i = 0; i < arr_len; i++) {
             // global mem to local register
-            arr[i] = mesh.pnt[mesh.geo[tdim - 1][index].vertex(i)];
+            arr[i] = mesh.pnt[mesh.geo[tdim - 1].vertex(index, i)];
         }
 
         constexpr auto quadrature_info = TemplateGeomtry::quadrature_info();

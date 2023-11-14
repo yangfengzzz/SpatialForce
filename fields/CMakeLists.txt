@@ -10,6 +10,7 @@ project(fields LANGUAGES C CXX CUDA)
 
 set(COMMON_FILES
         geometry.h
+        geometry.cu
         geometry_trait.h
         template_geometry.h
         templates/interval.h

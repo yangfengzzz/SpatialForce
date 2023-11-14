@@ -24,7 +24,7 @@ struct VolumeIntegrator {
         vec_t<dim, float> arr[arr_len];
         for (uint32_t i = 0; i < arr_len; i++) {
             // global mem to local register
-            arr[i] = mesh.pnt[mesh.geo[dim][index].vertex(i)];
+            arr[i] = mesh.pnt[mesh.geo[dim].vertex(index, i)];
         }
 
         constexpr auto quadrature_info = TemplateGeomtry::quadrature_info();
