@@ -20,8 +20,10 @@ set(COMMON_FILES
 )
 
 set(HOST_FILES
-        host/grid.h
-        host/grid.cu
+        host/grid_host.h
+        host/grid_host.cu
+        host/geometry_host.h
+        host/geometry_host.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})

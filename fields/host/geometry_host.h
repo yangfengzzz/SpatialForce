@@ -6,17 +6,19 @@
 
 #pragma once
 
-#include "../grid.h"
-#include "../mesh.h"
+#include <vector>
+#include "../geometry.h"
 
 namespace wp::fields {
-template<uint32_t DIM>
-class Grid {
-public:
-    static constexpr uint32_t dim = DIM;
-    using point_t = vec_t<dim, float>;
+class Geometry {
+private:
+    geometry_t handle;
 
-    mesh_t<dim, dim> mesh_handle;
-    grid_t<dim> grid_handle;
+    /// Index of the geometry.
+    int32_t ind;
+    /// Index of vertices.
+    std::vector<uint32_t> vtx;
+    /// Index of boundary geometries.
+    std::vector<uint32_t> bnd;
 };
 }// namespace wp::fields

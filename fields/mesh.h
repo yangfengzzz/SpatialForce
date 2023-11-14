@@ -25,35 +25,35 @@ struct mesh_t {
     /// Geometries arrays of the mesh.
     /// The geometries in \p n dimension are in the \p n-th entry of the array,
     /// which is still an array.
-    fixed_array_t<array_t<geometry_bm_t>, dim + 1> geo;
+    fixed_array_t<array_t<geometry_t>, dim + 1> geo;
 
     /// Geometries array in certain dimension.
-    [[nodiscard]] CUDA_CALLABLE const array_t<geometry_bm_t> &geometry(int d) const {
+    [[nodiscard]] CUDA_CALLABLE const array_t<geometry_t> &geometry(int d) const {
         return geo[d];
     }
 
     /// Geometries array in certain dimension.
-    CUDA_CALLABLE array_t<geometry_bm_t> &geometry(int d) {
+    CUDA_CALLABLE array_t<geometry_t> &geometry(int d) {
         return geo[d];
     }
 
     /// Certain geometry in certain dimension.
-    [[nodiscard]] CUDA_CALLABLE const geometry_bm_t &geometry(int d, int index) const {
+    [[nodiscard]] CUDA_CALLABLE const geometry_t &geometry(int d, int index) const {
         return geo[d](index);
     }
 
     /// Certain geometry in certain dimension.
-    CUDA_CALLABLE geometry_bm_t &geometry(int d, int index) {
+    CUDA_CALLABLE geometry_t &geometry(int d, int index) {
         return geo[d](index);
     }
 
     /// Boundary marker of certain geometry in certain dimension.
-    [[nodiscard]] CUDA_CALLABLE geometry_bm_t::bmark_t boundaryMark(int d, int index) const {
+    [[nodiscard]] CUDA_CALLABLE auto boundaryMark(int d, int index) const {
         return geo[d](index).bm;
     }
 
     /// Boundary marker of certain geometry in certain dimension.
-    CUDA_CALLABLE geometry_bm_t::bmark_t &boundaryMark(int d, int index) {
+    CUDA_CALLABLE auto &boundaryMark(int d, int index) {
         return geo[d](index).bm;
     }
 };

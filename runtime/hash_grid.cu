@@ -45,7 +45,7 @@ __global__ void compute_cell_offsets(int* cell_starts, int* cell_ends, const int
 
 HashGrid::HashGrid(Stream& stream, uint32_t dim_x, uint32_t dim_y, uint32_t dim_z) : stream_{stream}, sort_{stream} {
     hash_grid_t grid;
-    memset(&grid, 0, sizeof(HashGrid));
+    memset(&grid, 0, sizeof(hash_grid_t));
 
     grid.dim_x = dim_x;
     grid.dim_y = dim_y;
@@ -56,8 +56,8 @@ HashGrid::HashGrid(Stream& stream, uint32_t dim_x, uint32_t dim_y, uint32_t dim_
     grid.cell_ends = (int*)Device::alloc(num_cells * sizeof(int));
 
     // upload to device
-    auto* grid_device = (HashGrid*)(Device::alloc(sizeof(HashGrid)));
-    stream.memcpy_h2d(grid_device, &grid, sizeof(HashGrid));
+    auto* grid_device = (hash_grid_t*)(Device::alloc(sizeof(hash_grid_t)));
+    stream.memcpy_h2d(grid_device, &grid, sizeof(hash_grid_t));
 
     grid_id_ = (uint64_t)(grid_device);
 }
@@ -67,7 +67,7 @@ HashGrid::~HashGrid() {
     Device::free(handle_.point_cells);
     Device::free(handle_.cell_starts);
     Device::free(handle_.cell_ends);
-    Device::free((HashGrid*)grid_id_);
+    Device::free((hash_grid_t*)grid_id_);
 }
 
 void HashGrid::reserve(int num_points) {
@@ -89,7 +89,7 @@ void HashGrid::reserve(int num_points) {
         // inside hash_grid_update_device(), but since
         // reserve can be called from Python we need to make
         // sure it is consistent
-        stream_.memcpy_h2d((HashGrid*)grid_id_, &handle_, sizeof(HashGrid));
+        stream_.memcpy_h2d((hash_grid_t*)grid_id_, &handle_, sizeof(hash_grid_t));
     }
 }
 
@@ -106,7 +106,7 @@ void HashGrid::update(float cell_width, const Array<wp::vec3>& positions, int nu
     rebuild(positions, num_points);
 
     // update device side grid descriptor
-    stream_.memcpy_h2d((HashGrid*)grid_id_, &handle_, sizeof(HashGrid));
+    stream_.memcpy_h2d((hash_grid_t*)grid_id_, &handle_, sizeof(hash_grid_t));
 }
 
 void HashGrid::rebuild(const Array<wp::vec3>& points, int num_points) {

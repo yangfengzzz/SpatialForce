@@ -21,6 +21,8 @@ set(COMMON_FILES
         stream.cu
         event.h
         event.cu
+        alloc.h
+        alloc.cu
 )
 
 set(TYPE_FILES

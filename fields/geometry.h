@@ -18,17 +18,13 @@ struct geometry_t {
     array_t<uint32_t> vtx;
     /// Index of boundary geometries.
     array_t<uint32_t> bnd;
+    /// Boundary marker.
+    int32_t bm{};
 
     /// An entry of the vertex index array.
     CUDA_CALLABLE uint32_t vertex(uint32_t i) const { return vtx[i]; }
     /// An entry of the boundary geometry index array.
     CUDA_CALLABLE uint32_t boundary(uint32_t i) const { return bnd[i]; }
-};
-
-struct geometry_bm_t : public geometry_t {
-    using bmark_t = int;
-    /// Boundary marker.
-    bmark_t bm{};
 };
 
 template<uint32_t SIZE>
