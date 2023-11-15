@@ -8,6 +8,7 @@
 
 #include "../mesh.h"
 #include "geometry_host.h"
+#include "runtime/alloc.h"
 #include <vector>
 
 namespace wp::fields {
@@ -17,6 +18,8 @@ public:
     static constexpr uint32_t dim = DIM;
     static constexpr uint32_t dow = DOW;
     using point_t = vec_t<dow, float>;
+
+    mesh_t<dim, dow> handle;
 
     /// Number of points in the mesh.
     [[nodiscard]] uint32_t n_point() const {
@@ -63,9 +66,15 @@ public:
         return geo[n].boundary_mark(j);
     }
 
-private:
-    mesh_t<dim, dow> handle;
+    void sync_h2d() {
+        handle.pnt = alloc_from_vector(pnt);
+        for (int i = 0; i <= dim; i++) {
+            geo[i].sync_h2d();
+            handle.geo[i] = geo[i].handle;
+        }
+    }
 
+private:
     /// Point array of the mesh.
     std::vector<point_t> pnt;
     /// Geometries arrays of the mesh.

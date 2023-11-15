@@ -15,10 +15,10 @@ struct geometry_t {
     /// Index of the geometry.
     array_t<int32_t> ind{};
     /// Index of vertices.
-    array_t<int32_t> vtx_prefix_sum;
+    array_t<uint32_t> vtx_index;
     array_t<uint32_t> vtx;
     /// Index of boundary geometries.
-    array_t<int32_t> bnd_prefix_sum;
+    array_t<uint32_t> bnd_index;
     array_t<uint32_t> bnd;
     /// Boundary marker.
     array_t<int32_t> bm{};

@@ -10,4 +10,4 @@ namespace wp::fields {
 template class Mesh<1, 1>;
 template class Mesh<2, 2>;
 template class Mesh<3, 3>;
-}
+}// namespace wp::fields

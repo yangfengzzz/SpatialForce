@@ -12,6 +12,8 @@
 namespace wp::fields {
 class Geometry {
 public:
+    geometry_t handle;
+
     [[nodiscard]] uint32_t n_index() const;
 
     [[nodiscard]] int32_t index(uint32_t) const;
@@ -27,9 +29,9 @@ public:
     /// Access to the boundary marker.
     [[nodiscard]] int32_t boundary_mark(uint32_t) const;
 
-private:
-    geometry_t handle;
+    void sync_h2d();
 
+private:
     /// Index of the geometry.
     std::vector<int32_t> ind;
     /// Index of vertices.

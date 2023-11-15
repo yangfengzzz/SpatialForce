@@ -13,45 +13,45 @@ CUDA_CALLABLE int32_t geometry_t::index(uint32_t idx) const {
 
 CUDA_CALLABLE uint32_t geometry_t::n_vertex(uint32_t idx) const {
     if (idx == 0) {
-        return vtx_prefix_sum[0];
+        return vtx_index[0];
     } else {
-        return vtx_prefix_sum[idx] - vtx_prefix_sum[idx - 1];
+        return vtx_index[idx] - vtx_index[idx - 1];
     }
 }
 CUDA_CALLABLE array_t<uint32_t> geometry_t::vertex(uint32_t idx) const {
     if (idx == 0) {
-        return {vtx.data, vtx_prefix_sum[0]};
+        return {vtx.data, (int)vtx_index[0]};
     } else {
-        return {vtx.data + vtx_prefix_sum[idx - 1], vtx_prefix_sum[idx] - vtx_prefix_sum[idx - 1]};
+        return {vtx.data + vtx_index[idx - 1], int(vtx_index[idx] - vtx_index[idx - 1])};
     }
 }
 CUDA_CALLABLE uint32_t geometry_t::vertex(uint32_t idx, uint32_t j) const {
     if (idx == 0) {
         return *(vtx.data + j);
     } else {
-        return *(vtx.data + vtx_prefix_sum[idx - 1] + j);
+        return *(vtx.data + vtx_index[idx - 1] + j);
     }
 }
 
 CUDA_CALLABLE uint32_t geometry_t::n_boundary(uint32_t idx) const {
     if (idx == 0) {
-        return bnd_prefix_sum[0];
+        return bnd_index[0];
     } else {
-        return bnd_prefix_sum[idx] - bnd_prefix_sum[idx - 1];
+        return bnd_index[idx] - bnd_index[idx - 1];
     }
 }
 CUDA_CALLABLE array_t<uint32_t> geometry_t::boundary(uint32_t idx) const {
     if (idx == 0) {
-        return {bnd.data, bnd_prefix_sum[0]};
+        return {bnd.data, (int)bnd_index[0]};
     } else {
-        return {bnd.data + bnd_prefix_sum[idx - 1], bnd_prefix_sum[idx] - bnd_prefix_sum[idx - 1]};
+        return {bnd.data + bnd_index[idx - 1], int(bnd_index[idx] - bnd_index[idx - 1])};
     }
 }
 CUDA_CALLABLE uint32_t geometry_t::boundary(uint32_t idx, uint32_t j) const {
     if (idx == 0) {
         return *(bnd.data + j);
     } else {
-        return *(bnd.data + bnd_prefix_sum[idx - 1] + j);
+        return *(bnd.data + bnd_index[idx - 1] + j);
     }
 }
 CUDA_CALLABLE int32_t geometry_t::boundary_mark(uint32_t idx) const {

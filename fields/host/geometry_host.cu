@@ -5,6 +5,7 @@
 //  property of any third parties.
 
 #include "geometry_host.h"
+#include "runtime/alloc.h"
 
 namespace wp::fields {
 uint32_t Geometry::n_index() const {
@@ -47,4 +48,14 @@ uint32_t Geometry::boundary(uint32_t idx, uint32_t j) const {
 int32_t Geometry::boundary_mark(uint32_t idx) const {
     return bm[idx];
 }
+
+void Geometry::sync_h2d() {
+    handle.ind = alloc_from_vector(ind);
+    handle.vtx_index = alloc_from_vector(vtx_index);
+    handle.vtx = alloc_from_vector(vtx);
+    handle.bnd_index = alloc_from_vector(bnd_index);
+    handle.bnd = alloc_from_vector(bnd);
+    handle.bm = alloc_from_vector(bm);
+}
+
 }// namespace wp::fields

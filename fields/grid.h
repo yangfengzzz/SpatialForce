@@ -22,8 +22,8 @@ struct grid_t {
 
     array_t<fixed_array_t<int32_t, 2>> neighbour;
     array_t<fixed_array_t<int32_t, 2>> period_bry;
-    array_t<point_t> boundaryCenter;
+    array_t<point_t> boundary_center;
     array_t<float> bry_size;
-    array_t<int32_t> boundaryMark;
+    array_t<int32_t> boundary_mark;
 };
 }// namespace wp::fields

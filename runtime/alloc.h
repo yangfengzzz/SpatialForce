@@ -29,4 +29,13 @@ void memset_device(void *stream, void *dest, int value, size_t n);
 // takes srcsize bytes starting at src and repeats them n times at dst (writes srcsize * n bytes in total):
 void memtile_host(void *dest, const void *src, size_t srcsize, size_t n);
 void memtile_device(void *stream, void *dest, const void *src, size_t srcsize, size_t n);
+
+template<typename T>
+array_t<T> alloc_from_vector(const std::vector<T> &src) {
+    auto count = sizeof(T) * src.size();
+    auto d = alloc_device(count);
+    memcpy_h2d(nullptr, d, (void*)src.data(), count);
+    return {(T*)d, (int)src.size()};
+}
+
 }// namespace wp
