@@ -25,6 +25,8 @@ set(HOST_FILES
         host/grid_host.cu
         host/geometry_host.h
         host/geometry_host.cu
+        host/mesh_host.h
+        host/mesh_host.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})
