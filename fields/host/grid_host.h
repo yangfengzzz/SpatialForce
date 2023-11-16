@@ -9,6 +9,7 @@
 #include "../grid.h"
 #include "../mesh.h"
 #include <string>
+#include <memory>
 #include "mesh_host.h"
 #include "runtime/alloc.h"
 
@@ -48,4 +49,15 @@ private:
     std::vector<float> bry_size;
     std::vector<int32_t> boundary_mark;
 };
+
+using Grid1D = Grid<1>;
+using Grid2D = Grid<2>;
+using Grid3D = Grid<3>;
+
+template<int dim>
+using GridPtr = std::shared_ptr<Grid<dim>>;
+
+using GridPtr1D = std::shared_ptr<Grid1D>;
+using GridPtr2D = std::shared_ptr<Grid2D>;
+using GridPtr3D = std::shared_ptr<Grid3D>;
 }// namespace wp::fields
