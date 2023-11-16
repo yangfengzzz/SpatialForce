@@ -37,6 +37,11 @@ public:
         mesh_handle = mesh.handle;
     }
 
+    /// Number of geometries in certain dimension.
+    [[nodiscard]] uint32_t n_geometry(int n) const {
+        return mesh.n_geometry(n);
+    }
+
 private:
     Mesh<dim, dim> mesh;
     std::vector<point_t> bary_center;

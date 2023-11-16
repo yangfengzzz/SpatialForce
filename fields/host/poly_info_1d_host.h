@@ -21,6 +21,8 @@ public:
 
     poly_info_t<1, order> handle;
 
+    void load_basis_func();
+
 private:
     GridPtr1D grid;
     std::vector<fixed_array_t<float, n_unknown>> poly_constants;
