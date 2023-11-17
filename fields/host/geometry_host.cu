@@ -50,12 +50,12 @@ int32_t Geometry::boundary_mark(uint32_t idx) const {
 }
 
 void Geometry::sync_h2d() {
-    handle.ind = alloc_from_vector(ind);
-    handle.vtx_index = alloc_from_vector(vtx_index);
-    handle.vtx = alloc_from_vector(vtx);
-    handle.bnd_index = alloc_from_vector(bnd_index);
-    handle.bnd = alloc_from_vector(bnd);
-    handle.bm = alloc_from_vector(bm);
+    handle.ind = alloc_array(ind);
+    handle.vtx_index = alloc_array(vtx_index);
+    handle.vtx = alloc_array(vtx);
+    handle.bnd_index = alloc_array(bnd_index);
+    handle.bnd = alloc_array(bnd);
+    handle.bm = alloc_array(bm);
 }
 
 }// namespace wp::fields

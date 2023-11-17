@@ -45,6 +45,16 @@ void PolyInfo<1, order>::build_basis_func() {
                      BuildBasisFuncFunctor<order>(grid->grid_handle, handle.poly_constants));
 }
 
+template<int order>
+void PolyInfo<1, order>::sync_h2d() {
+    handle.poly_constants = alloc_array(poly_constants);
+}
+
+template<int order>
+PolyInfo<1, order>::~PolyInfo() {
+    free_array(handle.poly_constants);
+}
+
 template class PolyInfo<1, 1>;
 template class PolyInfo<1, 2>;
 template class PolyInfo<1, 3>;

@@ -31,11 +31,17 @@ void memtile_host(void *dest, const void *src, size_t srcsize, size_t n);
 void memtile_device(void *stream, void *dest, const void *src, size_t srcsize, size_t n);
 
 template<typename T>
-array_t<T> alloc_from_vector(const std::vector<T> &src) {
+array_t<T> alloc_array(const std::vector<T> &src) {
     auto count = sizeof(T) * src.size();
     auto d = alloc_device(count);
     memcpy_h2d(nullptr, d, (void*)src.data(), count);
     return {(T*)d, (int)src.size()};
+}
+
+template<typename T>
+void free_array(array_t<T> array) {
+    free_device(array.data);
+    array.data = nullptr;
 }
 
 }// namespace wp

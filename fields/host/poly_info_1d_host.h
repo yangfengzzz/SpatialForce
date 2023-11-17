@@ -18,9 +18,17 @@ public:
 
     poly_info_t<1, order> handle;
 
-    void build_basis_func();
+    explicit PolyInfo(GridPtr1D grid) : grid{std::move(grid)} {
+        build_basis_func();
+        sync_h2d();
+    }
+
+    ~PolyInfo();
 
 private:
+    void build_basis_func();
+    void sync_h2d();
+
     GridPtr1D grid;
     std::vector<fixed_array_t<float, n_unknown>> poly_constants;
 };

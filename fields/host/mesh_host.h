@@ -67,7 +67,7 @@ public:
     }
 
     void sync_h2d() {
-        handle.pnt = alloc_from_vector(pnt);
+        handle.pnt = alloc_array(pnt);
         for (int i = 0; i <= dim; i++) {
             geo[i].sync_h2d();
             handle.geo[i] = geo[i].handle;

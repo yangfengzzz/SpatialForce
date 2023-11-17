@@ -24,14 +24,14 @@ public:
     grid_t<dim> grid_handle;
 
     void sync_h2d() {
-        grid_handle.bary_center = alloc_from_vector(bary_center);
-        grid_handle.volume = alloc_from_vector(volume);
-        grid_handle.size = alloc_from_vector(size);
-        grid_handle.neighbour = alloc_from_vector(neighbour);
-        grid_handle.period_bry = alloc_from_vector(period_bry);
-        grid_handle.boundary_center = alloc_from_vector(boundary_center);
-        grid_handle.bry_size = alloc_from_vector(bry_size);
-        grid_handle.boundary_mark = alloc_from_vector(boundary_mark);
+        grid_handle.bary_center = alloc_array(bary_center);
+        grid_handle.volume = alloc_array(volume);
+        grid_handle.size = alloc_array(size);
+        grid_handle.neighbour = alloc_array(neighbour);
+        grid_handle.period_bry = alloc_array(period_bry);
+        grid_handle.boundary_center = alloc_array(boundary_center);
+        grid_handle.bry_size = alloc_array(bry_size);
+        grid_handle.boundary_mark = alloc_array(boundary_mark);
 
         mesh.sync_h2d();
         mesh_handle = mesh.handle;
