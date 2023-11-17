@@ -4,6 +4,7 @@
 #include "surface_integrator.h"
 #include "volume_integrator.h"
 #include "host/poly_info_1d_host.h"
+#include "host/poly_info_2d_host.h"
 #include <iostream>
 #include "grid.h"
 
@@ -14,6 +15,7 @@ void test() {
     }
     mesh_t<1, 1> mesh{};
     PolyInfo<Interval, 1> poly{nullptr};
+    PolyInfo<Triangle, 1> poly2{nullptr};
 }
 
 void test2() {

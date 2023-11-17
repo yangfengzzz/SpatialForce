@@ -30,6 +30,8 @@ set(HOST_FILES
         host/poly_info_1d_host.cu
         host/poly_info_2d_host.h
         host/poly_info_2d_host.cu
+        host/poly_info_3d_host.h
+        host/poly_info_3d_host.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})
