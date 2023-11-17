@@ -25,22 +25,21 @@ struct poly_info_t<Triangle, ORDER> {
 
     struct AverageBasisFuncFunctor {
         CUDA_CALLABLE AverageBasisFuncFunctor(grid_t grid, poly_info_t<Triangle, order> poly)
-            : grid(std::move(grid)), poly_constants{poly} {
+            : grid(std::move(grid)), poly_constants{poly.poly_constants} {
         }
 
         struct IntegratorFunctor {
-            CUDA_CALLABLE IntegratorFunctor(int j, int k, int ele_idx, point_t bc)
-                : j(j), k(k), ele_idx(ele_idx), bc(bc) {}
+            CUDA_CALLABLE IntegratorFunctor(int j, int k, point_t bc)
+                : j(j), k(k), bc(bc) {}
 
             using RETURN_TYPE = float;
-            CUDA_CALLABLE float operator()(vec_t<2, float> pt) {
+            CUDA_CALLABLE float operator()(point_t pt) {
                 return pow(pt[0] - bc[0], j) * pow(pt[1] - bc[1], k);
             }
 
             point_t bc;
             int j{};
             int k{};
-            int ele_idx{};
         };
 
         /// Element average of basis function
@@ -103,8 +102,8 @@ struct poly_info_t<Triangle, ORDER> {
     };
 
     struct FuncValueFunctor {
-        CUDA_CALLABLE FuncValueFunctor(const grid_t &grid, PolyInfo<Triangle, order> poly)
-            : poly_constants{poly} {
+        CUDA_CALLABLE FuncValueFunctor(const grid_t &grid, poly_info_t<Triangle, order> poly)
+            : poly_constants{poly.poly_constants} {
             bary_center = grid.bary_center;
             bary_size = grid.bry_size;
         }
@@ -147,7 +146,7 @@ struct poly_info_t<Triangle, ORDER> {
     };
 
     struct FuncGradientFunctor {
-        CUDA_CALLABLE explicit FuncGradientFunctor(const grid_t& grid) {
+        CUDA_CALLABLE explicit FuncGradientFunctor(const grid_t &grid) {
             bary_size = grid.bry_size;
             bary_center = grid.bary_center;
         }
