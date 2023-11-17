@@ -18,11 +18,10 @@ struct poly_info_t<2, ORDER> {
     static constexpr int order = ORDER;
     static constexpr int n_unknown = (order + 2) * (order + 1) / 2 - 1;
     array_t<fixed_array_t<float, n_unknown>> poly_constants;
-    using point_t = grid_t<2>::point_t;
+    using grid_t = grid_t<Triangle>;
+    using point_t = grid_t::point_t;
     using Mat = mat_t<n_unknown, n_unknown, float>;
     using Vec = mat_t<n_unknown, 1, float>;
-
-
 };
 
 }// namespace wp::fields

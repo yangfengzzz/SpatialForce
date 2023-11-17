@@ -15,7 +15,7 @@ namespace wp::fields {
 namespace {
 template<int order>
 struct BuildBasisFuncFunctor {
-    inline CUDA_CALLABLE BuildBasisFuncFunctor(const grid_t<1> &grid,
+    inline CUDA_CALLABLE BuildBasisFuncFunctor(const grid_t<Interval> &grid,
                                                array_t<fixed_array_t<float, PolyInfo<1, order>::n_unknown>> poly_constants) {
         size = grid.size;
         output = poly_constants;

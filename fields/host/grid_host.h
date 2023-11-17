@@ -14,14 +14,14 @@
 #include "runtime/alloc.h"
 
 namespace wp::fields {
-template<uint32_t DIM>
+template<typename TYPE>
 class Grid {
 public:
-    static constexpr uint32_t dim = DIM;
+    static constexpr uint32_t dim = TYPE::dim;
     using point_t = vec_t<dim, float>;
 
     mesh_t<dim, dim> mesh_handle;
-    grid_t<dim> grid_handle;
+    grid_t<TYPE> grid_handle;
 
     void sync_h2d() {
         grid_handle.bary_center = alloc_array(bary_center);
@@ -55,12 +55,12 @@ private:
     std::vector<int32_t> boundary_mark;
 };
 
-using Grid1D = Grid<1>;
-using Grid2D = Grid<2>;
-using Grid3D = Grid<3>;
+using Grid1D = Grid<Interval>;
+using Grid2D = Grid<Triangle>;
+using Grid3D = Grid<Tetrahedron>;
 
-template<int dim>
-using GridPtr = std::shared_ptr<Grid<dim>>;
+template<typename TYPE>
+using GridPtr = std::shared_ptr<Grid<TYPE>>;
 
 using GridPtr1D = std::shared_ptr<Grid1D>;
 using GridPtr2D = std::shared_ptr<Grid2D>;

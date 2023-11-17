@@ -11,8 +11,8 @@
 #include <algorithm>
 
 namespace wp::fields {
-template class Grid<1>;
-template class Grid<2>;
-template class Grid<3>;
+template class Grid<Interval>;
+template class Grid<Triangle>;
+template class Grid<Tetrahedron>;
 
 }// namespace wp::fields

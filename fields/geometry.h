@@ -23,22 +23,68 @@ struct geometry_t {
     /// Boundary marker.
     array_t<int32_t> bm{};
 
-    CUDA_CALLABLE int32_t index(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE int32_t index(uint32_t idx) const {
+        return ind[idx];
+    }
+
     /// Number of vertices.
-    CUDA_CALLABLE uint32_t n_vertex(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE uint32_t n_vertex(uint32_t idx) const {
+        if (idx == 0) {
+            return vtx_index[0];
+        } else {
+            return vtx_index[idx] - vtx_index[idx - 1];
+        }
+    }
+
     /// The vertex index array.
-    CUDA_CALLABLE array_t<uint32_t> vertex(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE array_t<uint32_t> vertex(uint32_t idx) const {
+        if (idx == 0) {
+            return {vtx.data, (int)vtx_index[0]};
+        } else {
+            return {vtx.data + vtx_index[idx - 1], int(vtx_index[idx] - vtx_index[idx - 1])};
+        }
+    }
+
     /// An entry of the vertex index array.
-    CUDA_CALLABLE uint32_t vertex(uint32_t, uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE uint32_t vertex(uint32_t idx, uint32_t j) const {
+        if (idx == 0) {
+            return *(vtx.data + j);
+        } else {
+            return *(vtx.data + vtx_index[idx - 1] + j);
+        }
+    }
 
     /// Number of boundary geometries.
-    CUDA_CALLABLE uint32_t n_boundary(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE uint32_t n_boundary(uint32_t idx) const {
+        if (idx == 0) {
+            return bnd_index[0];
+        } else {
+            return bnd_index[idx] - bnd_index[idx - 1];
+        }
+    }
+
     /// The boundary geometry index array.
-    CUDA_CALLABLE array_t<uint32_t> boundary(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE array_t<uint32_t> boundary(uint32_t idx) const {
+        if (idx == 0) {
+            return {bnd.data, (int)bnd_index[0]};
+        } else {
+            return {bnd.data + bnd_index[idx - 1], int(bnd_index[idx] - bnd_index[idx - 1])};
+        }
+    }
+
     /// An entry of the boundary geometry index array.
-    CUDA_CALLABLE uint32_t boundary(uint32_t, uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE uint32_t boundary(uint32_t idx, uint32_t j) const {
+        if (idx == 0) {
+            return *(bnd.data + j);
+        } else {
+            return *(bnd.data + bnd_index[idx - 1] + j);
+        }
+    }
+
     /// Access to the boundary marker.
-    CUDA_CALLABLE int32_t boundary_mark(uint32_t) const;
+    [[nodiscard]] inline CUDA_CALLABLE int32_t boundary_mark(uint32_t idx) const {
+        return bm[idx];
+    }
 };
 
 template<uint32_t SIZE>

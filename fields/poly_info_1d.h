@@ -18,12 +18,13 @@ struct poly_info_t<1, ORDER> {
     static constexpr int order = ORDER;
     static constexpr int n_unknown = order;
     array_t<fixed_array_t<float, n_unknown>> poly_constants;
-    using point_t = grid_t<1>::point_t;
+    using grid_t = grid_t<Interval>;
+    using point_t = grid_t::point_t;
     using Mat = mat_t<n_unknown, n_unknown, float>;
     using Vec = mat_t<n_unknown, 1, float>;
 
     struct averageBasisFuncFunctor {
-        CUDA_CALLABLE averageBasisFuncFunctor(const grid_t<1> &grid, const poly_info_t<1, order> poly) {
+        CUDA_CALLABLE averageBasisFuncFunctor(const grid_t &grid, const poly_info_t<1, order> poly) {
             bary_center = grid.bary_center;
             bary_size = grid.size;
             poly_constants = poly.poly_constants;
@@ -66,7 +67,7 @@ struct poly_info_t<1, ORDER> {
     };
 
     struct updateLSMatrixFunctor {
-        CUDA_CALLABLE updateLSMatrixFunctor(const grid_t<1> &grid, const poly_info_t<1, order> poly)
+        CUDA_CALLABLE updateLSMatrixFunctor(const grid_t &grid, const poly_info_t<1, order> poly)
             : averageBasisFunc(grid, poly) {}
 
         CUDA_CALLABLE void operator()(size_t basisIdx, const array_t<int32_t> &patch,
@@ -89,7 +90,7 @@ struct poly_info_t<1, ORDER> {
     };
 
     struct funcValueFunctor {
-        CUDA_CALLABLE funcValueFunctor(const grid_t<1> &grid, const poly_info_t<1, order> poly) {
+        CUDA_CALLABLE funcValueFunctor(const grid_t &grid, const poly_info_t<1, order> poly) {
             bary_center = grid.bary_center;
             bary_size = grid.bry_size;
         }
@@ -125,7 +126,7 @@ struct poly_info_t<1, ORDER> {
     };
 
     struct funcGradientFunctor {
-        CUDA_CALLABLE explicit funcGradientFunctor(const grid_t<1> &grid) {
+        CUDA_CALLABLE explicit funcGradientFunctor(const grid_t &grid) {
             bary_center = grid.bary_center;
             bary_size = grid.size;
         }

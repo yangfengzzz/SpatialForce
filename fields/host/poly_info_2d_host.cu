@@ -17,12 +17,12 @@ namespace wp::fields {
 namespace {
 template<int order>
 struct BuildBasisFuncFunctor {
-    using point_t = grid_t<2>::point_t;
+    using point_t = grid_t<Triangle>::point_t;
 
     inline CUDA_CALLABLE
-    BuildBasisFuncFunctor(const grid_t<2> &grid,
-                          array_t<fixed_array_t<float, PolyInfo<2, order>::n_unknown>> poly_constants) {
-        bary_center = grid.bary_center;
+    BuildBasisFuncFunctor(const grid_t<Triangle> &grid,
+                          array_t<fixed_array_t<float, PolyInfo<2, order>::n_unknown>> poly_constants)
+        : grid(grid) {
         output = poly_constants;
     }
 
@@ -50,7 +50,7 @@ struct BuildBasisFuncFunctor {
             for (int j = 0; j <= m; ++j) {
                 int k = m - j;
                 IntegratorFunctor functor(j, k, ele_idx, bary_center);
-                J0 = vol_integrator(ele_idx, functor);
+                J0 = grid.volume_integrator(ele_idx, functor);
                 J0 /= area_of_ele(ele_idx);
                 output[ele_idx][index] = J0;
                 index++;
@@ -62,7 +62,7 @@ private:
     array_t<float> area_of_ele;
     array_t<point_t> bary_center;
     array_t<fixed_array_t<float, PolyInfo<2, order>::n_unknown>> output;
-    VolumeIntegrator<Triangle, 2> vol_integrator;// todo
+    grid_t<Triangle> grid;
 };
 }// namespace
 

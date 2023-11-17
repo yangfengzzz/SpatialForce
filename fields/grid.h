@@ -9,11 +9,15 @@
 #include "core/vec.h"
 #include "core/fixed_array.h"
 #include "fields/geometry.h"
+#include "geometry_trait.h"
+#include "template_geometry.h"
+#include "surface_integrator.h"
+#include "volume_integrator.h"
 
 namespace wp::fields {
-template<uint32_t DIM>
-struct grid_t {
-    static constexpr uint32_t dim = DIM;
+template<typename TYPE>
+struct grid_base_t {
+    static constexpr uint32_t dim = TYPE::dim;
     using point_t = vec_t<dim, float>;
 
     array_t<point_t> bary_center;
@@ -26,4 +30,27 @@ struct grid_t {
     array_t<float> bry_size;
     array_t<int32_t> boundary_mark;
 };
+
+template<typename TYPE>
+struct grid_t : public grid_base_t<TYPE> {
+};
+
+template<>
+struct grid_t<Interval> : public grid_base_t<Interval> {
+    VolumeIntegrator<Interval, 1> volume_integrator;
+    SurfaceIntegrator<Interval, 1> surface_integrator;
+};
+
+template<>
+struct grid_t<Triangle> : public grid_base_t<Triangle> {
+    VolumeIntegrator<Triangle, 1> volume_integrator;
+    SurfaceIntegrator<IntervalTo2D, 1> surface_integrator;
+};
+
+template<>
+struct grid_t<Tetrahedron> : public grid_base_t<Tetrahedron> {
+    VolumeIntegrator<Tetrahedron, 1> volume_integrator;
+    SurfaceIntegrator<TriangleTo3D, 1> surface_integrator;
+};
+
 }// namespace wp::fields
