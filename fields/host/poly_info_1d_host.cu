@@ -14,9 +14,9 @@
 namespace wp::fields {
 namespace {
 template<int order>
-struct loadBasisFuncFunctor {
-    inline loadBasisFuncFunctor(const grid_t<1> &grid,
-                                array_t<fixed_array_t<float, PolyInfo<1, order>::n_unknown>> poly_constants) {
+struct BuildBasisFuncFunctor {
+    inline CUDA_CALLABLE BuildBasisFuncFunctor(const grid_t<1> &grid,
+                                               array_t<fixed_array_t<float, PolyInfo<1, order>::n_unknown>> poly_constants) {
         size = grid.size;
         output = poly_constants;
     }
@@ -40,9 +40,9 @@ private:
 }// namespace
 
 template<int order>
-void PolyInfo<1, order>::load_basis_func() {
+void PolyInfo<1, order>::build_basis_func() {
     thrust::for_each(thrust::counting_iterator<size_t>(0), thrust::counting_iterator<size_t>(0) + grid->n_geometry(1),
-                     loadBasisFuncFunctor<order>(grid->grid_handle, handle.poly_constants));
+                     BuildBasisFuncFunctor<order>(grid->grid_handle, handle.poly_constants));
 }
 
 template class PolyInfo<1, 1>;

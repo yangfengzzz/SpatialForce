@@ -77,7 +77,7 @@ struct shape_t {
         return dims[i];
     }
 
-    CUDA_CALLABLE inline int size() {
+    CUDA_CALLABLE inline int size() const {
         return dims[0] * dims[1] * dims[2] * dims[3];
     }
 

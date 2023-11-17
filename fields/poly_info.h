@@ -8,9 +8,9 @@
 
 namespace wp::fields {
 
-template<int dim, int order>
+template<int DIM, int ORDER>
 class poly_info_t {
-    static_assert(dim < 1 || dim > 3, "Not implemented - N should be either 1, 2 or 3.");
+    static_assert(DIM < 1 || DIM > 3, "Not implemented - N should be either 1, 2 or 3.");
 };
 
 }// namespace wp::fields

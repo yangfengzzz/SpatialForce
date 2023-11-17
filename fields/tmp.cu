@@ -3,6 +3,7 @@
 #include "template_geometry.h"
 #include "surface_integrator.h"
 #include "volume_integrator.h"
+#include "host/poly_info_1d_host.h"
 #include <iostream>
 #include "grid.h"
 
@@ -12,6 +13,7 @@ void test() {
         std::cout << pnt[0] << std::endl;
     }
     mesh_t<1, 1> mesh{};
+    PolyInfo<1, 1> poly{};
 }
 
 void test2() {

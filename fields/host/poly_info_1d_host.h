@@ -9,19 +9,16 @@
 #include "poly_info_host.h"
 #include "grid_host.h"
 #include "../poly_info_1d.h"
-#include "core/mat.h"
 
 namespace wp::fields {
 template<int order>
 class PolyInfo<1, order> {
 public:
     static constexpr int n_unknown = order;
-    using Mat = mat_t<n_unknown, n_unknown, float>;
-    using Vec = mat_t<n_unknown, 1, float>;
 
     poly_info_t<1, order> handle;
 
-    void load_basis_func();
+    void build_basis_func();
 
 private:
     GridPtr1D grid;
