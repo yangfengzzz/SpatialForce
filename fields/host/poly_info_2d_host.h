@@ -12,11 +12,11 @@
 
 namespace wp::fields {
 template<int order>
-class PolyInfo<2, order> {
+class PolyInfo<Triangle, order> {
 public:
     static constexpr int n_unknown = (order + 2) * (order + 1) / 2 - 1;
 
-    poly_info_t<2, order> handle;
+    poly_info_t<Triangle, order> handle;
 
     explicit PolyInfo(GridPtr2D grid) : grid{std::move(grid)} {
         build_basis_func();

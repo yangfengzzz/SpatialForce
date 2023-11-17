@@ -16,7 +16,7 @@ namespace {
 template<int order>
 struct BuildBasisFuncFunctor {
     inline CUDA_CALLABLE BuildBasisFuncFunctor(const grid_t<Interval> &grid,
-                                               array_t<fixed_array_t<float, PolyInfo<1, order>::n_unknown>> poly_constants) {
+                                               array_t<fixed_array_t<float, PolyInfo<Interval, order>::n_unknown>> poly_constants) {
         size = grid.size;
         output = poly_constants;
     }
@@ -35,27 +35,27 @@ struct BuildBasisFuncFunctor {
 
 private:
     array_t<float> size;
-    array_t<fixed_array_t<float, PolyInfo<1, order>::n_unknown>> output;
+    array_t<fixed_array_t<float, PolyInfo<Interval, order>::n_unknown>> output;
 };
 }// namespace
 
 template<int order>
-void PolyInfo<1, order>::build_basis_func() {
+void PolyInfo<Interval, order>::build_basis_func() {
     thrust::for_each(thrust::counting_iterator<size_t>(0), thrust::counting_iterator<size_t>(0) + grid->n_geometry(1),
                      BuildBasisFuncFunctor<order>(grid->grid_handle, handle.poly_constants));
 }
 
 template<int order>
-void PolyInfo<1, order>::sync_h2d() {
+void PolyInfo<Interval, order>::sync_h2d() {
     handle.poly_constants = alloc_array(poly_constants);
 }
 
 template<int order>
-PolyInfo<1, order>::~PolyInfo() {
+PolyInfo<Interval, order>::~PolyInfo() {
     free_array(handle.poly_constants);
 }
 
-template class PolyInfo<1, 1>;
-template class PolyInfo<1, 2>;
-template class PolyInfo<1, 3>;
+template class PolyInfo<Interval, 1>;
+template class PolyInfo<Interval, 2>;
+template class PolyInfo<Interval, 3>;
 }// namespace wp::fields

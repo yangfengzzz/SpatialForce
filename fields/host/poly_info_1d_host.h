@@ -12,11 +12,11 @@
 
 namespace wp::fields {
 template<int order>
-class PolyInfo<1, order> {
+class PolyInfo<Interval, order> {
 public:
     static constexpr int n_unknown = order;
 
-    poly_info_t<1, order> handle;
+    poly_info_t<Interval, order> handle;
 
     explicit PolyInfo(GridPtr1D grid) : grid{std::move(grid)} {
         build_basis_func();

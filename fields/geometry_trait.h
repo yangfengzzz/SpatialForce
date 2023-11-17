@@ -13,12 +13,9 @@ struct Triangle;
 struct TriangleTo3D;
 struct TwinTriangle;
 struct TwinTriangleTo3D;
-struct Oblong;
-struct OblongTo3D;
 struct Tetrahedron;
 struct TwinTetrahedron;
 struct FourTetrahedron;
-struct Recthexa;
 
 struct Interval {
     static constexpr uint32_t dim = 1;
@@ -308,126 +305,6 @@ struct TwinTriangleTo3D {
     }
 };
 
-struct Oblong {
-    static constexpr uint32_t dim = 2;
-    static constexpr uint32_t tdim = 2;
-    using point_t = vec_t<dim, float>;
-    using ref_point_t = vec_t<tdim, float>;
-    static constexpr uint32_t arr_len = 4;
-
-#define COPY_TO_A                  \
-    a[0][0] = gv[1][0] - gv[0][0]; \
-    a[0][1] = gv[1][1] - gv[0][1]; \
-    a[1][0] = gv[3][0] - gv[0][0]; \
-    a[1][1] = gv[3][1] - gv[0][1];
-
-    CUDA_CALLABLE static float det(const point_t v1, const point_t v2) { return v1[0] * v2[1] - v1[1] * v2[0]; }
-
-    CUDA_CALLABLE static float volume(const point_t *v) {
-        return 1.f;
-    };
-
-    CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        float a[3];
-        a[0] = .5f * (-lp[0] - lp[1]);
-        a[1] = .5f * (1.f + lp[0]);
-        a[2] = .5f * (1.f + lp[1]);
-
-        return ref_point_t{a[0] * gv[0][0] + a[1] * gv[1][0] + a[2] * gv[3][0],
-                           a[0] * gv[0][1] + a[1] * gv[1][1] + a[2] * gv[3][1]};
-    }
-
-    CUDA_CALLABLE static point_t global_to_local(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        float det0;
-        point_t a[3];
-        COPY_TO_A
-
-        a[2][0] = 2.f * gp[0] - (gv[1][0] + gv[3][0]);
-        a[2][1] = 2.f * gp[1] - (gv[1][1] + gv[3][1]);
-
-        det0 = det(a[0], a[1]);
-        return point_t{det(a[2], a[1]) / det0,
-                       det(a[0], a[2]) / det0};
-    }
-
-    CUDA_CALLABLE static float local_to_global_jacobian(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        point_t a[2];
-        COPY_TO_A
-
-        return det(a[0], a[1]) / 4.f;
-    }
-
-    CUDA_CALLABLE static float global_to_local_jacobian(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        point_t a[2];
-        COPY_TO_A
-        return 4.f / det(a[0], a[1]);
-    }
-#undef COPY_TO_A
-};
-
-struct OblongTo3D {
-    static constexpr uint32_t dim = 2;
-    static constexpr uint32_t tdim = 3;
-    using point_t = vec_t<dim, float>;
-    using ref_point_t = vec_t<tdim, float>;
-    using associate_t = Oblong;
-    static constexpr uint32_t arr_len = 4;
-
-    CUDA_CALLABLE static float volume(const point_t *v) {
-        return 1.f;
-    };
-
-    CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        float a[3];
-        a[0] = .5f * (-lp[0] - lp[1]);
-        a[1] = .5f * (1.f + lp[0]);
-        a[2] = .5f * (1.f + lp[1]);
-
-        return ref_point_t{a[0] * gv[0][0] + a[1] * gv[1][0] + a[2] * gv[3][0],
-                           a[0] * gv[0][1] + a[1] * gv[1][1] + a[2] * gv[3][1],
-                           a[0] * gv[0][2] + a[1] * gv[1][2] + a[2] * gv[3][2]};
-    }
-
-    CUDA_CALLABLE static point_t global_to_local(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        // todo
-        return point_t{0, 0};
-    }
-
-    CUDA_CALLABLE static float local_to_global_jacobian(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        ref_point_t a[2];
-        a[0][0] = gv[1][0] - gv[0][0];
-        a[0][1] = gv[1][1] - gv[0][1];
-        a[0][2] = gv[1][2] - gv[0][2];
-        a[1][0] = gv[3][0] - gv[0][0];
-        a[1][1] = gv[3][1] - gv[0][1];
-        a[1][2] = gv[3][2] - gv[0][2];
-
-        ref_point_t n;
-        n[0] = a[0][1] * a[1][2] - a[0][2] * a[1][1];
-        n[1] = -a[0][0] * a[1][2] - a[0][2] * a[1][0];
-        n[2] = a[0][0] * a[1][1] - a[0][1] * a[1][0];
-
-        return sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]) / 4.f;
-    }
-
-    CUDA_CALLABLE static float global_to_local_jacobian(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        ref_point_t a[2];
-        a[0][0] = gv[1][0] - gv[0][0];
-        a[0][1] = gv[1][1] - gv[0][1];
-        a[0][2] = gv[1][2] - gv[0][2];
-        a[1][0] = gv[3][0] - gv[0][0];
-        a[1][1] = gv[3][1] - gv[0][1];
-        a[1][2] = gv[3][2] - gv[0][2];
-
-        ref_point_t n;
-        n[0] = a[0][1] * a[1][2] - a[0][2] * a[1][1];
-        n[1] = -a[0][0] * a[1][2] - a[0][2] * a[1][0];
-        n[2] = a[0][0] * a[1][1] - a[0][1] * a[1][0];
-
-        return 4.f / sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-    }
-};
-
 struct Tetrahedron {
     static constexpr uint32_t dim = 3;
     static constexpr uint32_t tdim = 3;
@@ -577,75 +454,6 @@ struct FourTetrahedron {
         float gvolume = Tetrahedron::get_volume(gv[0], gv[1], gv[2], gv[3]);
         return lvolume / gvolume;
     }
-};
-
-struct Recthexa {
-    static constexpr uint32_t dim = 3;
-    static constexpr uint32_t tdim = 3;
-    using point_t = vec_t<dim, float>;
-    using ref_point_t = vec_t<tdim, float>;
-    static constexpr uint32_t arr_len = 5;
-
-#define COPY_TO_A                  \
-    a[0][0] = gv[1][0] - gv[0][0]; \
-    a[0][1] = gv[1][1] - gv[0][1]; \
-    a[0][2] = gv[1][2] - gv[0][2]; \
-    a[1][0] = gv[3][0] - gv[0][0]; \
-    a[1][1] = gv[3][1] - gv[0][1]; \
-    a[1][2] = gv[3][2] - gv[0][2]; \
-    a[2][0] = gv[4][0] - gv[0][0]; \
-    a[2][1] = gv[4][1] - gv[0][1]; \
-    a[2][2] = gv[4][2] - gv[0][2];
-
-    CUDA_CALLABLE static float det(const point_t v1, const point_t v2, const point_t v3) {
-        return v1[0] * v2[1] * v3[2] + v1[1] * v2[2] * v3[0] + v1[2] * v2[0] * v3[1] - v1[0] * v2[2] * v3[1] -
-               v1[1] * v2[0] * v3[2] - v1[2] * v2[1] * v3[0];
-    }
-
-    CUDA_CALLABLE static float volume(const point_t *v) {
-        return 1.;
-    };
-
-    CUDA_CALLABLE static ref_point_t local_to_global(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        float a[4];
-        a[0] = .5f * (-1.f - lp[0] - lp[1] - lp[2]);
-        a[1] = .5f * (1.f + lp[0]);
-        a[2] = .5f * (1.f + lp[1]);
-        a[3] = .5f * (1.f + lp[2]);
-
-        return ref_point_t{a[0] * gv[0][0] + a[1] * gv[1][0] + a[2] * gv[3][0] + a[3] * gv[4][0],
-                           a[0] * gv[0][1] + a[1] * gv[1][1] + a[2] * gv[3][1] + a[3] * gv[4][1],
-                           a[0] * gv[0][2] + a[1] * gv[1][2] + a[2] * gv[3][2] + a[3] * gv[4][2]};
-    }
-
-    CUDA_CALLABLE static point_t global_to_local(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        float det0;
-        point_t a[4];
-        COPY_TO_A
-
-        a[3][0] = 2.f * gp[0] - (gv[1][0] + gv[3][0] + gv[4][0] - gv[0][0]);
-        a[3][1] = 2.f * gp[1] - (gv[1][1] + gv[3][1] + gv[4][1] - gv[0][1]);
-        a[3][2] = 2.f * gp[2] - (gv[1][2] + gv[3][2] + gv[4][2] - gv[0][2]);
-
-        det0 = det(a[0], a[1], a[2]);
-        return point_t{det(a[3], a[1], a[2]) / det0,
-                       det(a[0], a[3], a[2]) / det0,
-                       det(a[0], a[1], a[3]) / det0};
-    }
-
-    CUDA_CALLABLE static float local_to_global_jacobian(const point_t lp, const point_t *lv, const ref_point_t *gv) {
-        point_t a[3];
-        COPY_TO_A
-
-        return det(a[0], a[1], a[2]) / 8.f;
-    }
-
-    CUDA_CALLABLE static float global_to_local_jacobian(const ref_point_t gp, const point_t *lv, const ref_point_t *gv) {
-        point_t a[3];
-        COPY_TO_A
-        return 8.f / det(a[0], a[1], a[2]);
-    }
-#undef COPY_TO_A
 };
 
 }// namespace wp::fields

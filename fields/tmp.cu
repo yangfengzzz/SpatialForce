@@ -13,7 +13,7 @@ void test() {
         std::cout << pnt[0] << std::endl;
     }
     mesh_t<1, 1> mesh{};
-    PolyInfo<1, 1> poly{nullptr};
+    PolyInfo<Interval, 1> poly{nullptr};
 }
 
 void test2() {

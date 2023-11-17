@@ -10,12 +10,11 @@
 
 namespace wp::fields {
 
-template<int dim, int order>
+template<typename TYPE, int order>
 class PolyInfo {
-    static_assert(dim < 1 || dim > 3, "Not implemented - N should be either 1, 2 or 3.");
 };
 
-template<int dim, int order>
-using PolyInfoPtr = std::shared_ptr<PolyInfo<dim, order>>;
+template<typename TYPE, int order>
+using PolyInfoPtr = std::shared_ptr<PolyInfo<TYPE, order>>;
 
 }// namespace wp::fields

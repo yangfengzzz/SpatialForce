@@ -12,11 +12,11 @@
 
 namespace wp::fields {
 
-template<int ORDER>
-struct poly_info_t<2, ORDER> {
-    static constexpr int dim = 2;
-    static constexpr int order = ORDER;
-    static constexpr int n_unknown = (order + 2) * (order + 1) / 2 - 1;
+template<uint32_t ORDER>
+struct poly_info_t<Triangle, ORDER> {
+    static constexpr uint32_t dim = Triangle::dim;
+    static constexpr uint32_t order = ORDER;
+    static constexpr uint32_t n_unknown = (order + 2) * (order + 1) / 2 - 1;
     array_t<fixed_array_t<float, n_unknown>> poly_constants;
     using grid_t = grid_t<Triangle>;
     using point_t = grid_t::point_t;
