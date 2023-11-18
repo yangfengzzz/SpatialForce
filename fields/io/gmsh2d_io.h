@@ -7,6 +7,7 @@
 #pragma once
 
 #include "simplest_mesh.h"
+#include "../template_geometry.h"
 #include <list>
 #include <string>
 
@@ -19,41 +20,22 @@ namespace wp::fields {
  */
 class GmshMesh2D : public SimplestMesh<2, 2> {
 public:
-    using GeometryType = int;
-    static constexpr GeometryType POINT = 15;
-    static constexpr GeometryType LINE = 1;
-    static constexpr GeometryType TRIANGLE = 2;
-    enum {
-        N_POINT_NODE = 1,
-        N_LINE_NODE = 2,
-        N_TRIANGLE_NODE = 3,
-        N_QUADRANGLE_NODE = 4,
-        N_TETRAHEDRON_NODE = 4,
-        N_HEXAHEDRON_NODE = 8,
-        N_PRISM_NODE = 6,
-        N_PYRAMID_NODE = 5,
-    };
+    using base_template_geometry_t = base_template_geometry_t<Triangle>;
 
-    struct GeometryBM {
-        /// Index of the geometry.
-        int ind;
-        /// Index of vertices.
-        std::vector<uint32_t> vtx;
-        /// Index of boundary geometries.
-        std::vector<uint32_t> bnd;
-        /// Boundary marker.
-        int bm;
-    };
-    std::list<GeometryBM> nodes;
-    std::list<GeometryBM> lines;
-    std::list<GeometryBM> surfaces;
-
-public:
     GmshMesh2D();
     ~GmshMesh2D() override;
 
 public:
     void read_data(const std::string &);
+
+private:
+    void base_generate_mesh();
+
+    void generate_mesh();
+
+    std::list<GeometryBM> nodes;
+    std::list<GeometryBM> lines;
+    std::list<GeometryBM> surfaces;
 };
 
 }// namespace wp::fields

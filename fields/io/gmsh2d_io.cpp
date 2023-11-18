@@ -9,6 +9,7 @@
 #include <iostream>
 #include <map>
 #include <array>
+#include <set>
 
 namespace wp::fields {
 #define THROW_INVALID_ARG_WITH_MESSAGE_IF(expression, message) \
@@ -413,5 +414,187 @@ void GmshMesh2D::read_data(const std::string &filename) {
     static const std::string end_elements_marker[] = {"$ENDELM", "$EndElements"};
     THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_elements_marker[gmsh_file_format == 10 ? 0 : 1],
                                       "Have some problem in Gmsh files")
+
+    generate_mesh();
 }
+
+void GmshMesh2D::base_generate_mesh() {
+    int i, j, k, l;
+    int32_t p;
+    std::cerr << "Generate mesh structure from the simplest mesh ..." << std::endl;
+
+    size_t n = n_element();
+    std::vector<std::vector<size_t>> pnt_patch(n_point());
+    for (i = 0; i < n; ++i) {
+        for (j = 0; j < element(i).vertex.size(); ++j) {
+            pnt_patch[element_vertex(i, j)].push_back(i);
+        }
+    }
+    std::vector<std::set<size_t, std::less<>>> ele_patch(n);
+    for (i = 0; i < n; ++i) {
+        for (j = 0; j < element(i).vertex.size(); ++j) {
+            ele_patch[i].insert(pnt_patch[element_vertex(i, j)].begin(), pnt_patch[element_vertex(i, j)].end());
+        }
+    }
+    pnt_patch.clear();
+
+    std::vector<std::vector<std::vector<int32_t>>> ele_geo(n, std::vector<std::vector<int32_t>>(dim + 1));
+
+    GeometryBM g;
+    point() = pnt;
+    for (i = 0; i <= dim; i++)
+        geometry((int)i).clear();
+    for (i = 0, p = -1; i < n; i++) {
+        std::vector<std::vector<int32_t>> &geo_img = ele_geo[i];
+
+        geo_img[0].resize(base_template_geometry_t::n_points(), -1);
+        g.vertex().resize(1);
+        g.boundary().resize(1);
+        for (j = 0; j < base_template_geometry_t::n_points(); j++) {
+            g.vertex(0) = element_vertex(i, j);
+            g.boundary(0) = element_vertex(i, j);
+
+            bool is_found = false;
+            int geo_idx = 0;
+            auto the_ele = ele_patch[i].begin(), end_ele = ele_patch[i].end();
+            for (; the_ele != end_ele; ++the_ele) {
+                size_t ele_idx = *the_ele;
+                if (ele_idx >= i)
+                    continue;
+                for (l = 0; l < ele_geo[ele_idx][0].size(); ++l) {
+                    geo_idx = ele_geo[ele_idx][0][l];
+                    if (geo_idx >= 0 && geometry(0, geo_idx).vertex(0) == g.vertex(0)) {
+                        is_found = true;
+                        break;
+                    }
+                }
+                if (is_found)
+                    break;
+            }
+            if (!is_found) {
+                geo_idx = n_geometry(0);
+                g.index() = geo_idx;
+                geometry(0).push_back(g);
+            }
+            geo_img[0][j] = geo_idx;
+        }
+        for (j = 1; j <= dim; j++) {
+            geo_img[j].resize(base_template_geometry_t::n_geometry((int)j));
+            for (k = 0; k < base_template_geometry_t::n_geometry((int)j); k++) {
+                g.vertex().resize(base_template_geometry_t::n_geometry_vertex((int)j, k));
+                g.boundary().resize(base_template_geometry_t::n_geometry_boundary((int)j, k));
+                for (l = 0; l < g.n_vertex(); l++)
+                    g.vertex(l) = geo_img[0][base_template_geometry_t::geometry_vertex((int)j, k, l)];
+                for (l = 0; l < g.n_boundary(); l++)
+                    g.boundary(l) = geo_img[j - 1][base_template_geometry_t::geometry_boundary((int)j, k, l)];
+                bool is_found = false;
+                int geo_idx = 0;
+                auto the_ele = ele_patch[i].begin(), end_ele = ele_patch[i].end();
+                for (; the_ele != end_ele; ++the_ele) {
+                    size_t ele_idx = *the_ele;
+                    if (ele_idx >= i)
+                        continue;
+                    for (l = 0; l < ele_geo[ele_idx][j].size(); ++l) {
+                        geo_idx = ele_geo[ele_idx][j][l];
+                        if (geo_idx >= 0 && is_same(geometry((int)j, geo_idx), g)) {
+                            is_found = true;
+                            break;
+                        }
+                    }
+                    if (is_found)
+                        break;
+                }
+
+                if (!is_found) {
+                    geo_idx = n_geometry((int)j);
+                    g.index() = geo_idx;
+                    geometry((int)j).push_back(g);
+                }
+                geo_img[j][k] = geo_idx;
+            }
+        }
+        if (static_cast<int32_t>(100 * i / n) > p) {
+            p = 100 * i / n;
+            std::cerr << "\r" << p << "% OK!" << std::flush;
+        }
+    }
+    std::cerr << "\r";
+
+    for (j = 1; j <= dim; j++) {
+        for (k = 0; k < n_geometry((int)j); k++) {
+            GeometryBM &geo = geometry((int)j, k);
+            for (l = 0; l < geo.n_vertex(); l++) {
+                n = geo.vertex(l);
+                geo.vertex(l) = geometry(0, n).vertex(0);
+            }
+        }
+    }
+    for (k = 0; k < n_geometry(1); k++) {
+        GeometryBM &geo = geometry(1, k);
+        for (l = 0; l < geo.n_boundary(); l++) {
+            n = geo.boundary(l);
+            geo.boundary(l) = geometry(0, n).vertex(0);
+        }
+    }
+    for (k = 0; k < n_geometry(0); k++) {
+        geometry(0, k).vertex(0) = k;
+        geometry(0, k).boundary(0) = k;
+    }
+}
+
+void GmshMesh2D::generate_mesh() {
+    base_generate_mesh();
+
+    int i, j;
+    std::vector<size_t> index(n_geometry(0));
+    for (i = 0; i < n_geometry(0); i++)
+        index[geometry(0, i).vertex(0)] = i;
+
+    std::list<GeometryBM>::iterator the_geo, end_geo;
+    the_geo = lines.begin();
+    end_geo = lines.end();
+    for (; the_geo != end_geo; the_geo++) {
+        for (i = 0; i < the_geo->n_vertex(); i++) {
+            j = the_geo->vertex(i);
+            the_geo->vertex(i) = index[j];
+        }
+    }
+    the_geo = nodes.begin();
+    end_geo = nodes.end();
+    for (; the_geo != end_geo; the_geo++) {
+        for (i = 0; i < the_geo->n_vertex(); i++) {
+            j = the_geo->vertex(i);
+            the_geo->vertex(i) = index[j];
+        }
+    }
+
+    the_geo = lines.begin();
+    end_geo = lines.end();
+    for (; the_geo != end_geo; the_geo++) {
+        for (i = 0; i < n_geometry(1); i++) {
+            if (is_same(geometry(1, i), *the_geo)) {
+                boundaryMark(1, i) = the_geo->boundaryMark();
+                break;
+            }
+        }
+    }
+    for (i = 0; i < n_geometry(1); i++) {
+        if (boundaryMark(1, i) == 0)
+            continue;
+        for (j = 0; j < geometry(1, i).n_boundary(); j++) {
+            boundaryMark(0, geometry(1, i).boundary(j)) = boundaryMark(1, i);
+        }
+    }
+    the_geo = nodes.begin();
+    end_geo = nodes.end();
+    for (; the_geo != end_geo; the_geo++) {
+        for (i = 0; i < n_geometry(0); i++) {
+            if (is_same(geometry(0, i), *the_geo)) {
+                boundaryMark(0, i) = the_geo->boundaryMark();
+                break;
+            }
+        }
+    }
+}
+
 }// namespace wp::fields

@@ -17,6 +17,10 @@ struct base_template_geometry_t<Triangle> {
         return fixed_array_t<point_t, 3>{point_t{0.0, 0.0}, point_t{1.0, 0.0}, point_t{0.0, 1.0}};
     }
 
+    CUDA_CALLABLE static constexpr auto n_points() {
+        return 3;
+    }
+
     CUDA_CALLABLE static constexpr auto geometry_dim0() {
         return fixed_array_t<static_geometry_t<1>, 3>{
             static_geometry_t<1>{
@@ -64,6 +68,70 @@ struct base_template_geometry_t<Triangle> {
                 .bnd = {0, 1, 2},
             },
         };
+    }
+
+    CUDA_CALLABLE static auto n_geometry(int n) {
+        switch (n) {
+            case 0:
+            case 1:
+                return 3;
+            case 2:
+                return 1;
+            default:
+                return 0;
+        }
+    }
+
+    CUDA_CALLABLE static auto n_geometry_vertex(int n, int k) {
+        switch (n) {
+            case 0:
+                return geometry_dim0()[k].vtx.size;
+            case 1:
+                return geometry_dim1()[k].vtx.size;
+            case 2:
+                return geometry_dim2()[k].vtx.size;
+            default:
+                return 0u;
+        }
+    }
+
+    CUDA_CALLABLE static auto geometry_vertex(int n, int k, int l) {
+        switch (n) {
+            case 0:
+                return geometry_dim0()[k].vtx[l];
+            case 1:
+                return geometry_dim1()[k].vtx[l];
+            case 2:
+                return geometry_dim2()[k].vtx[l];
+            default:
+                return 0u;
+        }
+    }
+
+    CUDA_CALLABLE static auto n_geometry_boundary(int n, int k) {
+        switch (n) {
+            case 0:
+                return geometry_dim0()[k].bnd.size;
+            case 1:
+                return geometry_dim1()[k].bnd.size;
+            case 2:
+                return geometry_dim2()[k].bnd.size;
+            default:
+                return 0u;
+        }
+    }
+
+    CUDA_CALLABLE static auto geometry_boundary(int n, int k, int l) {
+        switch (n) {
+            case 0:
+                return geometry_dim0()[k].bnd[l];
+            case 1:
+                return geometry_dim1()[k].bnd[l];
+            case 2:
+                return geometry_dim2()[k].bnd[l];
+            default:
+                return 0u;
+        }
     }
 };
 
