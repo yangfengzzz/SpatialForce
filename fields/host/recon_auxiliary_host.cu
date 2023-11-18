@@ -10,12 +10,12 @@
 
 namespace wp::fields {
 namespace {
-template <typename TYPE, uint32_t Order>
+template<typename TYPE, uint32_t Order>
 struct UpdateLSMatrixFunctor {
     CUDA_CALLABLE explicit UpdateLSMatrixFunctor(grid_t<TYPE> grid, poly_info_t<TYPE, Order> poly, recon_auxiliary_t<TYPE, Order> aux)
         : functor(grid, poly), aux_view(aux) {}
 
-    template <typename Index>
+    template<typename Index>
     inline CUDA_CALLABLE void operator()(Index ele_idx) {
         functor(ele_idx, aux_view.get_patch(ele_idx), aux_view.get_poly_avgs(ele_idx), aux_view.get_g_inv(ele_idx));
 
@@ -27,12 +27,35 @@ private:
     recon_auxiliary_t<TYPE, Order> aux_view;
     typename poly_info_t<TYPE, Order>::UpdateLSMatrixFunctor functor;
 };
-} // namespace
+}// namespace
 
-template <typename TYPE, uint32_t Order>
+template<typename TYPE, uint32_t Order>
 void ReconAuxiliary<TYPE, Order>::build_ls_matrix() {
     thrust::for_each(thrust::counting_iterator<size_t>(0), thrust::counting_iterator<size_t>(0) + grid->n_geometry(TYPE::dim),
                      UpdateLSMatrixFunctor<TYPE, Order>(grid->grid_handle, polyInfo.handle, handle));
+}
+
+template<typename TYPE, uint32_t Order>
+void ReconAuxiliary<TYPE, Order>::sync_h2d() {
+    handle.patch_prefix_sum = alloc_array(patch_prefix_sum);
+    handle.patch = alloc_array(patch);
+    handle.patch_polys = alloc_array(patch_polys);
+    handle.G_inv = alloc_array(G_inv);
+}
+
+template<typename TYPE, uint32_t Order>
+ReconAuxiliary<TYPE, Order>::ReconAuxiliary(GridPtr<TYPE> grid)
+    : grid{grid}, polyInfo{grid} {
+    build_ls_matrix();
+    sync_h2d();
+}
+
+template<typename TYPE, uint32_t Order>
+ReconAuxiliary<TYPE, Order>::~ReconAuxiliary() {
+    free_array(handle.patch_prefix_sum);
+    free_array(handle.patch);
+    free_array(handle.patch_polys);
+    free_array(handle.G_inv);
 }
 
 template class ReconAuxiliary<Interval, 1>;

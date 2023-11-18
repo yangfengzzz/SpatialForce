@@ -20,9 +20,14 @@ class ReconAuxiliary {
 public:
     recon_auxiliary_t<TYPE, Order> handle;
 
-    void build_ls_matrix();
+    ReconAuxiliary(GridPtr<TYPE> grid);
+
+    ~ReconAuxiliary();
 
 private:
+    void build_ls_matrix();
+    void sync_h2d();
+
     GridPtr<TYPE> grid;
     PolyInfo<TYPE, Order> polyInfo;
     struct ElementHelper {
@@ -32,7 +37,7 @@ private:
 
     std::vector<uint32_t> patch_prefix_sum;
     std::vector<int32_t> patch;
-    std::vector<fixed_array_t<double, poly_info_t<TYPE, Order>::n_unknown>> patch_polys;
+    std::vector<fixed_array_t<float, poly_info_t<TYPE, Order>::n_unknown>> patch_polys;
     std::vector<typename poly_info_t<TYPE, Order>::Mat> G_inv;
 };
 
