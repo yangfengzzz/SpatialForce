@@ -20,7 +20,11 @@ class ReconAuxiliary {
 public:
     recon_auxiliary_t<TYPE, Order> handle;
 
-    ReconAuxiliary(GridPtr<TYPE> grid);
+    poly_info_t<TYPE, Order> poly_info_handle() {
+        return polyInfo.handle;
+    }
+
+    explicit ReconAuxiliary(GridPtr<TYPE> grid);
 
     ~ReconAuxiliary();
 
