@@ -74,12 +74,12 @@ struct poly_info_t<Interval, ORDER> {
                                       array_t<fixed_array_t<float, n_unknown>> poly_avgs, Mat *G) {
             averageBasisFunc(basisIdx, patch, poly_avgs);
 
-//            G[0].fill(0.0);
+            G[0].fill(0.f);
             for (size_t j = 0; j < patch.shape.size(); ++j) {
                 fixed_array_t<float, n_unknown> poly_avg = poly_avgs[j];
                 for (int t1 = 0; t1 < n_unknown; ++t1) {
                     for (int t2 = 0; t2 < n_unknown; ++t2) {
-//                        G[0](t1, t2) += poly_avg[t1] * poly_avg[t2];
+                        G[0](t1, t2) += poly_avg[t1] * poly_avg[t2];
                     }
                 }
             }

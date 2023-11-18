@@ -344,7 +344,7 @@ inline CUDA_CALLABLE Type tensordot(vec_t<Length, Type> a, vec_t<Length, Type> b
 }
 
 template <unsigned Length, typename Type>
-inline CUDA_CALLABLE Type index(const vec_t<Length, Type>& a, int idx) {
+inline CUDA_CALLABLE Type& index(const vec_t<Length, Type>& a, int idx) {
 #ifndef NDEBUG
     if (idx < 0 || idx >= Length) {
         printf("vec index %d out of bounds at %s %d\n", idx, __FILE__, __LINE__);

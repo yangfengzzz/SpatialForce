@@ -19,7 +19,8 @@ struct UpdateLSMatrixFunctor {
     inline CUDA_CALLABLE void operator()(Index ele_idx) {
         functor(ele_idx, aux_view.get_patch(ele_idx), aux_view.get_poly_avgs(ele_idx), aux_view.get_g_inv(ele_idx));
 
-//        aux_view.G_inv[ele_idx].invert();
+        aux_view.G_inv[ele_idx] = inverse(aux_view.G_inv[ele_idx]);
+        // todo larger matrix inverse for high order reconstruction
     }
 
 private:
@@ -39,10 +40,6 @@ template class ReconAuxiliary<Interval, 2>;
 template class ReconAuxiliary<Interval, 3>;
 
 template class ReconAuxiliary<Triangle, 1>;
-template class ReconAuxiliary<Triangle, 2>;
-template class ReconAuxiliary<Triangle, 3>;
 
 template class ReconAuxiliary<Tetrahedron, 1>;
-template class ReconAuxiliary<Tetrahedron, 2>;
-template class ReconAuxiliary<Tetrahedron, 3>;
 }// namespace wp::fields

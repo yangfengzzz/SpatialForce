@@ -152,6 +152,14 @@ struct mat_t {
         }
     }
 
+    inline CUDA_CALLABLE void fill(Type val) {
+        for (unsigned j = 0; j < Cols; ++j) {
+            for (unsigned i = 0; i < Rows; ++i) {
+                data[i][j] = val;
+            }
+        }
+    }
+
     CUDA_CALLABLE vec_t<Cols, Type> get_row(int index) const { return (vec_t<Cols, Type>&)data[index]; }
 
     CUDA_CALLABLE void set_row(int index, const vec_t<Cols, Type>& v) { (vec_t<Cols, Type>&)data[index] = v; }
@@ -172,9 +180,9 @@ struct mat_t {
 
     inline CUDA_CALLABLE vec_t<Cols, Type> operator[](int index) const { return get_row(index); }
 
-    CUDA_CALLABLE inline Type operator()(int i, int j);
+    CUDA_CALLABLE inline Type& operator()(int i, int j);
 
-    CUDA_CALLABLE inline const Type operator()(int i, int j) const;
+    CUDA_CALLABLE inline const Type& operator()(int i, int j) const;
 
     // row major storage assumed to be compatible with PyTorch
     Type data[Rows][Cols] = {};
@@ -261,7 +269,7 @@ inline CUDA_CALLABLE vec_t<Cols, Type> index(const mat_t<Rows, Cols, Type>& m, i
 }
 
 template <unsigned Rows, unsigned Cols, typename Type>
-inline CUDA_CALLABLE Type index(const mat_t<Rows, Cols, Type>& m, int row, int col) {
+inline CUDA_CALLABLE const Type& index(const mat_t<Rows, Cols, Type>& m, int row, int col) {
 #ifndef NDEBUG
     if (row < 0 || row >= Rows) {
         printf("mat row index %d out of bounds at %s %d\n", row, __FILE__, __LINE__);
@@ -276,12 +284,27 @@ inline CUDA_CALLABLE Type index(const mat_t<Rows, Cols, Type>& m, int row, int c
 }
 
 template <unsigned Rows, unsigned Cols, typename Type>
-CUDA_CALLABLE inline Type mat_t<Rows, Cols, Type>::operator()(int i, int j) {
+inline CUDA_CALLABLE Type& index(mat_t<Rows, Cols, Type>& m, int row, int col) {
+#ifndef NDEBUG
+    if (row < 0 || row >= Rows) {
+        printf("mat row index %d out of bounds at %s %d\n", row, __FILE__, __LINE__);
+        assert(0);
+    }
+    if (col < 0 || col >= Cols) {
+        printf("mat col index %d out of bounds at %s %d\n", col, __FILE__, __LINE__);
+        assert(0);
+    }
+#endif
+    return m.data[row][col];
+}
+
+template <unsigned Rows, unsigned Cols, typename Type>
+CUDA_CALLABLE inline Type& mat_t<Rows, Cols, Type>::operator()(int i, int j) {
     return index(*this, i, j);
 }
 
 template <unsigned Rows, unsigned Cols, typename Type>
-CUDA_CALLABLE inline const Type mat_t<Rows, Cols, Type>::operator()(int i, int j) const {
+CUDA_CALLABLE inline const Type& mat_t<Rows, Cols, Type>::operator()(int i, int j) const {
     return index(*this, i, j);
 }
 
@@ -536,7 +559,11 @@ inline CUDA_CALLABLE vec_t<Rows, Type> get_diag(const mat_t<Rows, Rows, Type>& m
     return ret;
 }
 
-// Only implementing inverses for 2x2, 3x3 and 4x4 matrices for now...
+template <typename Type>
+inline CUDA_CALLABLE mat_t<1, 1, Type> inverse(const mat_t<1, 1, Type>& m) {
+    return mat_t<1, 1, Type>(1.f / m.data[0][0]);
+}
+
 template <typename Type>
 inline CUDA_CALLABLE mat_t<2, 2, Type> inverse(const mat_t<2, 2, Type>& m) {
     Type det = determinant(m);
