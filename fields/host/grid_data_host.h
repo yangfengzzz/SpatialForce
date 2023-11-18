@@ -53,4 +53,7 @@ private:
     std::vector<typename poly_info_t<TYPE, order>::Vec> slope;
     const GridPtr<TYPE> grid;
 };
+template<typename TYPE, uint32_t order>
+using GridDataPtr = std::shared_ptr<GridData<TYPE, order>>;
+
 }// namespace wp::fields
