@@ -40,11 +40,19 @@ set(HOST_FILES
         host/grid_system_data_host.cu
 )
 
+set(IO_FILES
+        io/simplest_mesh.h
+        io/simplest_mesh.cpp
+        io/gmsh2d_io.h
+        io/gmsh2d_io.cpp
+)
+
 source_group("common\\" FILES ${COMMON_FILES})
 
 set(PROJECT_FILES
         ${COMMON_FILES}
         ${HOST_FILES}
+        ${IO_FILES}
 )
 
 add_library(${PROJECT_NAME} OBJECT ${PROJECT_FILES})
