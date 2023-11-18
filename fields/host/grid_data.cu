@@ -7,9 +7,35 @@
 #include "grid_data.h"
 
 namespace wp::fields {
+template<typename TYPE>
+GridDataSimple<TYPE>::~GridDataSimple() {
+    free_array(handle.data);
+}
+
+template<typename TYPE>
+void GridDataSimple<TYPE>::sync_h2d() {
+    handle.data = alloc_array(data);
+}
+
+template class GridDataSimple<Interval>;
+template class GridDataSimple<Triangle>;
+template class GridDataSimple<Tetrahedron>;
+
 template<typename TYPE, uint32_t order>
 GridData<TYPE, order>::GridData(uint32_t idx, GridPtr<TYPE> grid, ReconAuxiliaryPtr<TYPE, order> aux)
     : GridDataBase{idx}, grid{grid}, recon_auxiliary{aux}, handle{grid->grid_handle, aux->poly_info_handle()} {
+}
+
+template<typename TYPE, uint32_t order>
+GridData<TYPE, order>::~GridData() {
+    free_array(handle.data);
+    free_array(handle.slope);
+}
+
+template<typename TYPE, uint32_t order>
+void GridData<TYPE, order>::sync_h2d() {
+    handle.data = alloc_array(data);
+    handle.slope = alloc_array(slope);
 }
 
 template class GridData<Interval, 1>;
