@@ -23,7 +23,6 @@ public:
     static constexpr GeometryType POINT = 15;
     static constexpr GeometryType LINE = 1;
     static constexpr GeometryType TRIANGLE = 2;
-    static constexpr GeometryType QUADRANGLE = 3;
     enum {
         N_POINT_NODE = 1,
         N_LINE_NODE = 2,
@@ -34,6 +33,20 @@ public:
         N_PRISM_NODE = 6,
         N_PYRAMID_NODE = 5,
     };
+
+    struct GeometryBM {
+        /// Index of the geometry.
+        int ind;
+        /// Index of vertices.
+        std::vector<uint32_t> vtx;
+        /// Index of boundary geometries.
+        std::vector<uint32_t> bnd;
+        /// Boundary marker.
+        int bm;
+    };
+    std::list<GeometryBM> nodes;
+    std::list<GeometryBM> lines;
+    std::list<GeometryBM> surfaces;
 
 public:
     GmshMesh2D();

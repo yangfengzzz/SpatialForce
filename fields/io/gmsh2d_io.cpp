@@ -11,9 +11,9 @@
 #include <array>
 
 namespace wp::fields {
-#define JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(expression, message) \
-    if (expression) {                                              \
-        throw std::invalid_argument(message);                      \
+#define THROW_INVALID_ARG_WITH_MESSAGE_IF(expression, message) \
+    if (expression) {                                          \
+        throw std::invalid_argument(message);                  \
     }
 
 GmshMesh2D::GmshMesh2D() = default;
@@ -37,7 +37,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
     else if (line == "$MeshFormat")
         gmsh_file_format = 20;
     else
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(true, "we only treat format > 2.0")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(true, "we only treat format > 2.0")
 
     if (gmsh_file_format == 20) {
         double version;
@@ -45,16 +45,16 @@ void GmshMesh2D::read_data(const std::string &filename) {
 
         is >> version >> file_type >> data_size;
 
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF((version < 2.0) || (version > 4.1), "NotImplemented for this gmsh format")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF((version < 2.0) || (version > 4.1), "NotImplemented for this gmsh format")
         gmsh_file_format = static_cast<unsigned int>(version * 10);
 
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(file_type != 0, "NotImplemented for this gmsh format")
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(data_size != sizeof(double), "NotImplemented for this gmsh format")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(file_type != 0, "NotImplemented for this gmsh format")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(data_size != sizeof(double), "NotImplemented for this gmsh format")
 
         // read the end of the header and the first line of the nodes description
         // to sync ourselves with the format 1 handling above
         is >> line;
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$EndMeshFormat", "Have some problem in Gmsh files")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$EndMeshFormat", "Have some problem in Gmsh files")
 
         is >> line;
         // if the next block is of kind $PhysicalNames, ignore it
@@ -86,7 +86,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                     is >> tag >> box_min_x >> box_min_y >> box_min_z >> box_max_x >> box_max_y >> box_max_z >> n_physicals;
                 }
                 // if there is a physical tag, we will use it as boundary id below
-                JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
+                THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
                 // if there is no physical tag, use 0 as default
                 int physical_tag = 0;
                 for (unsigned int j = 0; j < n_physicals; ++j)
@@ -102,7 +102,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                 // we only care for 'tag' as key for tag_maps[1]
                 is >> tag >> box_min_x >> box_min_y >> box_min_z >> box_max_x >> box_max_y >> box_max_z >> n_physicals;
                 // if there is a physical tag, we will use it as boundary id below
-                JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
+                THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
                 // if there is no physical tag, use 0 as default
                 int physical_tag = 0;
                 for (unsigned int j = 0; j < n_physicals; ++j)
@@ -124,7 +124,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                 // we only care for 'tag' as key for tag_maps[2]
                 is >> tag >> box_min_x >> box_min_y >> box_min_z >> box_max_x >> box_max_y >> box_max_z >> n_physicals;
                 // if there is a physical tag, we will use it as boundary id below
-                JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
+                THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
                 // if there is no physical tag, use 0 as default
                 int physical_tag = 0;
                 for (unsigned int j = 0; j < n_physicals; ++j)
@@ -145,7 +145,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                 // we only care for 'tag' as key for tag_maps[3]
                 is >> tag >> box_min_x >> box_min_y >> box_min_z >> box_max_x >> box_max_y >> box_max_z >> n_physicals;
                 // if there is a physical tag, we will use it as boundary id below
-                JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
+                THROW_INVALID_ARG_WITH_MESSAGE_IF(n_physicals >= 2, "More than one tag is not supported!")
                 // if there is no physical tag, use 0 as default
                 int physical_tag = 0;
                 for (unsigned int j = 0; j < n_physicals; ++j)
@@ -158,7 +158,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                     is >> tag;
             }
             is >> line;
-            JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$EndEntities", "Have some problem in Gmsh files")
+            THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$EndEntities", "Have some problem in Gmsh files")
             is >> line;
         }
 
@@ -173,7 +173,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
         // but the next thing should,
         // in any case, be the list of
         // nodes:
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$Nodes", "Have some problem in Gmsh files")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(line != "$Nodes", "Have some problem in Gmsh files")
     }
 
     // now read the nodes list
@@ -247,20 +247,20 @@ void GmshMesh2D::read_data(const std::string &filename) {
                 }
             }
         }
-        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(global_vertex != n_vertices, "DimensionMismatch")
+        THROW_INVALID_ARG_WITH_MESSAGE_IF(global_vertex != n_vertices, "DimensionMismatch")
     }
 
     // Assert we reached the end of the block
     is >> line;
     static const std::string end_nodes_marker[] = {"$ENDNOD", "$EndNodes"};
-    JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_nodes_marker[gmsh_file_format == 10 ? 0 : 1],
-                                          "Have some problem in Gmsh files")
+    THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_nodes_marker[gmsh_file_format == 10 ? 0 : 1],
+                                      "Have some problem in Gmsh files")
 
     // Now read in next bit
     is >> line;
     static const std::string begin_elements_marker[] = {"$ELM", "$Elements"};
-    JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != begin_elements_marker[gmsh_file_format == 10 ? 0 : 1],
-                                          "Have some problem in Gmsh files")
+    THROW_INVALID_ARG_WITH_MESSAGE_IF(line != begin_elements_marker[gmsh_file_format == 10 ? 0 : 1],
+                                      "Have some problem in Gmsh files")
 
     // now read the cell list
     if (gmsh_file_format > 40) {
@@ -309,23 +309,21 @@ void GmshMesh2D::read_data(const std::string &filename) {
 
                 unsigned int nod_num = 0;
 
-                /*
-         For file format version 1, the format of each cell is as follows:
-         elm-number elm-type reg-phys reg-elem number-of-nodes
-         node-number-list
-
-         However, for version 2, the format reads like this:
-         elm-number elm-type number-of-tags < tag > ... node-number-list
-
-         For version 4, we have:
-         tag(int) numVert(int) ...
-
-         In the following, we will ignore the element number (we simply
-         enumerate them in the order in which we read them, and we will
-         take reg-phys (version 1) or the first tag (version 2, if any tag
-         is given at all) as material id. For version 4, we already read
-         the material and the cell type in above.
-         */
+                // For file format version 1, the format of each cell is as follows:
+                // elm-number elm-type reg-phys reg-elem number-of-nodes
+                // node-number-list
+                //
+                // However, for version 2, the format reads like this:
+                // elm-number elm-type number-of-tags < tag > ... node-number-list
+                //
+                // For version 4, we have:
+                // tag(int) numVert(int) ...
+                //
+                // In the following, we will ignore the element number (we simply
+                // enumerate them in the order in which we read them, and we will
+                // take reg-phys (version 1) or the first tag (version 2, if any tag
+                // is given at all) as material id. For version 4, we already read
+                // the material and the cell type in above.
 
                 unsigned int elm_number = 0;
                 if (gmsh_file_format < 40) {
@@ -357,64 +355,54 @@ void GmshMesh2D::read_data(const std::string &filename) {
                     is >> tag;
                 }
 
-                /*       `ELM-TYPE'
-         defines the geometrical type of the N-th element:
-         `1'
-         Line (2 nodes, 1 edge).
-
-         `3'
-         Quadrangle (4 nodes, 4 edges).
-
-         `5'
-         Hexahedron (8 nodes, 12 edges, 6 faces).
-
-         `15'
-         Point (1 node).
-         */
-                //                GeometryBM geo;
-                //                unsigned int node_index = 0;
-                //                switch (cell_type) {
-                //                    case POINT:
-                //                        // read the indices of nodes given
-                //                        if (gmsh_file_format < 20) {
-                //                            for (unsigned int i = 0; i < nod_num; ++i)
-                //                                is >> node_index;
-                //                        } else {
-                //                            is >> node_index;
-                //                        }
+                //`ELM-TYPE'
+                // defines the geometrical type of the N-th element:
+                // `1'
+                // Line (2 nodes, 1 edge).
                 //
-                //                        geo.vertex(0) = vertex_indices[node_index];
-                //                        nodes.push_back(geo);
-                //                        break;
-                //                    case LINE:
-                //                        geo.boundaryMark() = material_id;// geometry region(material marker)
-                //                        geo.vertex().resize(N_LINE_NODE);
-                //                        for (int l = 0; l < N_LINE_NODE; l++) {// index of node
-                //                            is >> node_index;
-                //                            geo.vertex(l) = vertex_indices[node_index];
-                //                        }
-                //                        lines.push_back(geo);
-                //                        break;
-                //                    case TRIANGLE:
-                //                        ele[global_surf].vertex.resize(N_TRIANGLE_NODE);
-                //                        for (int l = 0; l < N_TRIANGLE_NODE; l++) {// index of node
-                //                            is >> node_index;
-                //                            ele[global_surf].vertex[l] = vertex_indices[node_index];
-                //                        }
-                //                        ele[global_surf++].template_element = 0;
-                //                        break;
-                //                    case QUADRANGLE:
-                //                        ele[global_surf].vertex.resize(N_QUADRANGLE_NODE);
-                //                        for (int l = 0; l < N_QUADRANGLE_NODE; l++) {// index of node
-                //                            is >> node_index;
-                //                            ele[global_surf].vertex[l] = vertex_indices[node_index];
-                //                        }
-                //                        ele[global_surf++].template_element = 1;
-                //                        break;
-                //                    default:
-                //                        JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(true, "Unsupported such type of element in DigitalFlex");
-                //                        break;
-                //                }
+                // `3'
+                // Quadrangle (4 nodes, 4 edges).
+                //
+                // `5'
+                // Hexahedron (8 nodes, 12 edges, 6 faces).
+                //
+                // `15'
+                // Point (1 node).
+                GeometryBM geo;
+                int node_index = 0;
+                switch (cell_type) {
+                    case POINT:
+                        // read the indices of nodes given
+                        if (gmsh_file_format < 20) {
+                            for (unsigned int i = 0; i < nod_num; ++i)
+                                is >> node_index;
+                        } else {
+                            is >> node_index;
+                        }
+
+                        geo.vtx[0] = vertex_indices[node_index];
+                        nodes.push_back(geo);
+                        break;
+                    case LINE:
+                        geo.bm = int(material_id);// geometry region(material marker)
+                        geo.vtx.resize(N_LINE_NODE);
+                        for (int l = 0; l < N_LINE_NODE; l++) {// index of node
+                            is >> node_index;
+                            geo.vtx[l] = vertex_indices[node_index];
+                        }
+                        lines.push_back(geo);
+                        break;
+                    case TRIANGLE:
+                        ele[global_surf].vertex.resize(N_TRIANGLE_NODE);
+                        for (int l = 0; l < N_TRIANGLE_NODE; l++) {// index of node
+                            is >> node_index;
+                            ele[global_surf].vertex[l] = vertex_indices[node_index];
+                        }
+                        break;
+                    default:
+                        THROW_INVALID_ARG_WITH_MESSAGE_IF(true, "Unsupported such type of element")
+                        break;
+                }
             }
         }
         ele.resize(global_surf);
@@ -423,7 +411,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
     // Assert we reached the end of the block
     is >> line;
     static const std::string end_elements_marker[] = {"$ENDELM", "$EndElements"};
-    JET_THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_elements_marker[gmsh_file_format == 10 ? 0 : 1],
-                                          "Have some problem in Gmsh files")
+    THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_elements_marker[gmsh_file_format == 10 ? 0 : 1],
+                                      "Have some problem in Gmsh files")
 }
 }// namespace wp::fields
