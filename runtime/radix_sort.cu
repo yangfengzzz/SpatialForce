@@ -11,6 +11,8 @@
 #include "radix_sort.h"
 
 namespace wp {
+std::map<void*, RadixSort::RadixSortTemp> RadixSort::g_radix_sort_temp_map;
+
 RadixSort::RadixSort(Stream& stream) : stream_{stream} {}
 
 void RadixSort::reserve(int n, void** mem_out, size_t* size_out) {

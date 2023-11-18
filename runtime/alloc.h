@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include "core/array.h"
+#include <vector>
+
 namespace wp {
 void *alloc_host(size_t s);
 void *alloc_pinned(size_t s);

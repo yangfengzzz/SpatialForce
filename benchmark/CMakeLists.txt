@@ -11,7 +11,7 @@ set(SRC
         main.cpp
 )
 
-add_executable(${PROJECT_NAME} WIN32 ${SRC})
+add_executable(${PROJECT_NAME} ${SRC})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE fields benchmark gtest)
+target_link_libraries(${PROJECT_NAME} PRIVATE fields runtime benchmark CUDA::cuda_driver)
 
