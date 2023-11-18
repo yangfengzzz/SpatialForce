@@ -9,6 +9,7 @@ project(sim-tests LANGUAGES C CXX)
 
 set(SRC
         main.cpp
+        io_tests.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRC})
