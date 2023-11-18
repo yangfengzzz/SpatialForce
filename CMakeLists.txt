@@ -39,8 +39,13 @@ if (CUDA_FOUND)
     include_directories(${CUDA_INCLUDE_DIRS})
 endif ()
 
+add_subdirectory(third_party)
+
 # Add third party libraries
 add_subdirectory(core)
 add_subdirectory(runtime)
 add_subdirectory(rigidbody)
 add_subdirectory(fields)
+
+add_subdirectory(unittest)
+add_subdirectory(benchmark)
