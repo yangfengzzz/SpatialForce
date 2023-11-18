@@ -90,12 +90,12 @@ struct poly_info_t<Tetrahedron, ORDER> {
                                       array_t<fixed_array_t<float, n_unknown>> poly_avgs, Mat *G) {
             averageBasisFunc(basisIdx, patch, poly_avgs);
 
-            G[0].fill(0.0);
+//            G[0].fill(0.0);
             for (uint32_t j = 0; j < patch.shape.size(); ++j) {
                 fixed_array_t<float, n_unknown> poly_avg = poly_avgs[j];
                 for (int t1 = 0; t1 < n_unknown; ++t1) {
                     for (int t2 = 0; t2 < n_unknown; ++t2) {
-                        G[0](t1, t2) += poly_avg[t1] * poly_avg[t2];
+//                        G[0](t1, t2) += poly_avg[t1] * poly_avg[t2];
                     }
                 }
             }
@@ -110,7 +110,7 @@ struct poly_info_t<Tetrahedron, ORDER> {
             : poly_constants(poly.poly_constants), bary_center(grid.bary_center), bary_size(grid.bry_size) {
         }
 
-        CUDA_CALLABLE double operator()(uint32_t idx, const point_t &coord, const float &avg, const Vec &para) {
+        CUDA_CALLABLE float operator()(uint32_t idx, const point_t &coord, const float &avg, const Vec &para) {
             fixed_array_t<float, n_unknown> aa;
             basis_function_value(idx, coord, aa);
 
@@ -175,12 +175,12 @@ struct poly_info_t<Tetrahedron, ORDER> {
 
         CUDA_CALLABLE void basis_function_gradient(uint32_t idx, const point_t &coord,
                                                    fixed_array_t<fixed_array_t<float, n_unknown>, dim> &result) {
-            Grid3D::point_t cr = coord;
+            point_t cr = coord;
             cr -= bary_center(idx);
 
             // coordinate x
             int index = 0;
-            double J0 = 0.0;
+            float J0 = 0.0;
             for (int m = 1; m <= order; ++m) {
                 for (int i = 0; i <= m; ++i) {
                     for (int k = 0; k <= m - i; ++k) {
