@@ -34,8 +34,10 @@ set(HOST_FILES
         host/poly_info_3d_host.cu
         host/recon_auxiliary_host.h
         host/recon_auxiliary_host.cu
-        host/grid_data.h
-        host/grid_data.cu
+        host/grid_data_host.h
+        host/grid_data_host.cu
+        host/grid_system_data_host.h
+        host/grid_system_data_host.cu
 )
 
 source_group("common\\" FILES ${COMMON_FILES})

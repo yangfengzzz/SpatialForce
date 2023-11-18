@@ -102,12 +102,6 @@ struct poly_info_t<Triangle, ORDER> {
     };
 
     struct FuncValueFunctor {
-        CUDA_CALLABLE FuncValueFunctor(const grid_t &grid, poly_info_t<Triangle, order> poly)
-            : poly_constants{poly.poly_constants} {
-            bary_center = grid.bary_center;
-            bary_size = grid.bry_size;
-        }
-
         CUDA_CALLABLE float operator()(size_t idx, const point_t &coord, const float &avg, const Vec &para) {
             fixed_array_t<float, n_unknown> aa;
             basis_function_value(idx, coord, aa);
@@ -138,7 +132,6 @@ struct poly_info_t<Triangle, ORDER> {
                 }
         }
 
-    private:
         array_t<point_t> bary_center;
         array_t<float> bary_size;
 
@@ -146,18 +139,13 @@ struct poly_info_t<Triangle, ORDER> {
     };
 
     struct FuncGradientFunctor {
-        CUDA_CALLABLE explicit FuncGradientFunctor(const grid_t &grid) {
-            bary_size = grid.bry_size;
-            bary_center = grid.bary_center;
-        }
-
-        CUDA_CALLABLE fixed_array_t<float, dim> operator()(size_t idx, const point_t &coord,
+        CUDA_CALLABLE vec_t<dim, float> operator()(size_t idx, const point_t &coord,
                                                            const Vec &para) {
             fixed_array_t<fixed_array_t<float, n_unknown>, dim> aa;
             basis_function_gradient(idx, coord, aa);
 
             float temp = 0.0;
-            fixed_array_t<float, dim> result;
+            vec_t<dim, float> result;
             for (uint32_t i = 0; i < dim; ++i) {
                 for (int t = 0; t < n_unknown; ++t) {
                     temp = para[t] * aa[i][t];
@@ -208,7 +196,6 @@ struct poly_info_t<Triangle, ORDER> {
             }
         }
 
-    private:
         array_t<point_t> bary_center;
         array_t<float> bary_size;
     };

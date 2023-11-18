@@ -90,11 +90,6 @@ struct poly_info_t<Interval, ORDER> {
     };
 
     struct FuncValueFunctor {
-        CUDA_CALLABLE FuncValueFunctor(const grid_t &grid, const poly_info_t<Interval, order> poly) {
-            bary_center = grid.bary_center;
-            bary_size = grid.bry_size;
-        }
-
         CUDA_CALLABLE void basis_function_value(int idx, const point_t &coord,
                                                 fixed_array_t<float, n_unknown> &result) {
             point_t cr = coord;
@@ -118,19 +113,12 @@ struct poly_info_t<Interval, ORDER> {
             return result;
         }
 
-    private:
         array_t<point_t> bary_center;
         array_t<float> bary_size;
-
         array_t<fixed_array_t<float, n_unknown>> poly_constants;
     };
 
     struct FuncGradientFunctor {
-        CUDA_CALLABLE explicit FuncGradientFunctor(const grid_t &grid) {
-            bary_center = grid.bary_center;
-            bary_size = grid.size;
-        }
-
         CUDA_CALLABLE void basis_function_gradient(int idx, const point_t &coord,
                                                    fixed_array_t<fixed_array_t<float, n_unknown>, 1> &result) {
             point_t cr = coord;
@@ -141,12 +129,12 @@ struct poly_info_t<Interval, ORDER> {
             }
         }
 
-        CUDA_CALLABLE fixed_array_t<float, 1> operator()(int idx, const point_t &coord, const Vec &para) {
+        CUDA_CALLABLE vec_t<dim, float> operator()(int idx, const point_t &coord, const Vec &para) {
             fixed_array_t<fixed_array_t<float, n_unknown>, 1> aa;
             basis_function_gradient(idx, coord, aa);
 
             float temp = 0.0;
-            fixed_array_t<float, 1> result;
+            vec_t<dim, float> result;
             for (int i = 0; i < dim; ++i) {
                 for (int t = 0; t < n_unknown; ++t) {
                     temp = para[t] * aa[i][t];
@@ -157,7 +145,6 @@ struct poly_info_t<Interval, ORDER> {
             return result;
         }
 
-    private:
         array_t<point_t> bary_center;
         array_t<float> bary_size;
     };

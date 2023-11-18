@@ -6,6 +6,7 @@
 #include "host/poly_info_1d_host.h"
 #include "host/poly_info_2d_host.h"
 #include "host/poly_info_3d_host.h"
+#include "host/grid_system_data_host.h"
 #include <iostream>
 #include "grid.h"
 
@@ -20,25 +21,26 @@ void test() {
         PolyInfo<Interval, 1> poly{nullptr};
         poly_info_t<Interval, 1>::AverageBasisFuncFunctor average_basis_func_functor{grid.grid_handle, poly.handle};
         poly_info_t<Interval, 1>::UpdateLSMatrixFunctor update_ls_matrix_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Interval, 1>::FuncValueFunctor func_value_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Interval, 1>::FuncGradientFunctor func_gradient_functor{grid.grid_handle};
+        poly_info_t<Interval, 1>::FuncValueFunctor func_value_functor{};
+        poly_info_t<Interval, 1>::FuncGradientFunctor func_gradient_functor{};
     }
     {
         Grid<Triangle> grid;
         PolyInfo<Triangle, 1> poly{nullptr};
         poly_info_t<Triangle, 1>::AverageBasisFuncFunctor average_basis_func_functor{grid.grid_handle, poly.handle};
         poly_info_t<Triangle, 1>::UpdateLSMatrixFunctor update_ls_matrix_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Triangle, 1>::FuncValueFunctor func_value_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Triangle, 1>::FuncGradientFunctor func_gradient_functor{grid.grid_handle};
+        poly_info_t<Triangle, 1>::FuncValueFunctor func_value_functor{};
+        poly_info_t<Triangle, 1>::FuncGradientFunctor func_gradient_functor{};
     }
     {
         Grid<Tetrahedron> grid;
         PolyInfo<Tetrahedron, 1> poly{nullptr};
         poly_info_t<Tetrahedron, 1>::AverageBasisFuncFunctor average_basis_func_functor{grid.grid_handle, poly.handle};
         poly_info_t<Tetrahedron, 1>::UpdateLSMatrixFunctor update_ls_matrix_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Tetrahedron, 1>::FuncValueFunctor func_value_functor{grid.grid_handle, poly.handle};
-        poly_info_t<Tetrahedron, 1>::FuncGradientFunctor func_gradient_functor{grid.grid_handle};
+        poly_info_t<Tetrahedron, 1>::FuncValueFunctor func_value_functor{};
+        poly_info_t<Tetrahedron, 1>::FuncGradientFunctor func_gradient_functor{};
     }
+    grid_system_data_t<Interval, 1, 1> system_data;
 }
 
 void test2() {

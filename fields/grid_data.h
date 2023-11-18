@@ -29,12 +29,12 @@ struct grid_data_base_t {
     }
 
     //! return value of specific point
-    CUDA_CALLABLE fixed_array_t<float, dim> gradient(const point_t &pt, uint32_t idx) {
-        return fixed_array_t<float, dim>{};
+    CUDA_CALLABLE vec_t<dim, float> gradient(const point_t &pt, uint32_t idx) {
+        return vec_t<dim, float>{};
     }
     //! return value of specific point in specific bry
-    CUDA_CALLABLE fixed_array_t<float, dim> gradient(const point_t &pt, uint32_t idx, uint32_t bry) {
-        return fixed_array_t<float, dim>{};
+    CUDA_CALLABLE vec_t<dim, float> gradient(const point_t &pt, uint32_t idx, uint32_t bry) {
+        return vec_t<dim, float>{};
     }
 };
 
@@ -47,9 +47,6 @@ struct grid_data_t : public grid_data_base_t<TYPE> {
     typename poly_info_t<TYPE, order>::FuncGradientFunctor func_gradient;
     array_t<typename poly_info_t<TYPE, order>::Vec> slope;
 
-    CUDA_CALLABLE grid_data_t(const grid_t<TYPE> &grid, poly_info_t<TYPE, order> poly)
-        : func_value{grid, poly}, func_gradient{grid} {}
-
     //! return value of specific point
     CUDA_CALLABLE float value(const point_t &pt, uint32_t idx) {
         return func_value(idx, pt, this->data[idx], slope[idx]);
@@ -60,11 +57,11 @@ struct grid_data_t : public grid_data_base_t<TYPE> {
     }
 
     //! return value of specific point
-    CUDA_CALLABLE fixed_array_t<float, dim> gradient(const point_t &pt, uint32_t idx) {
+    CUDA_CALLABLE vec_t<dim, float> gradient(const point_t &pt, uint32_t idx) {
         return func_gradient(idx, pt, slope[idx]);
     }
     //! return value of specific point in specific bry
-    CUDA_CALLABLE fixed_array_t<float, dim> gradient(const point_t &pt, uint32_t idx, uint32_t bry) {
+    CUDA_CALLABLE vec_t<dim, float> gradient(const point_t &pt, uint32_t idx, uint32_t bry) {
         return func_gradient(idx, pt, slope[idx]);
     }
 };

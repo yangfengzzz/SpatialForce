@@ -4,7 +4,7 @@
 //  personal capacity and am not conveying any rights to any intellectual
 //  property of any third parties.
 
-#include "grid_data.h"
+#include "grid_data_host.h"
 
 namespace wp::fields {
 template<typename TYPE>
@@ -23,7 +23,7 @@ template class GridDataSimple<Tetrahedron>;
 
 template<typename TYPE, uint32_t order>
 GridData<TYPE, order>::GridData(uint32_t idx, GridPtr<TYPE> grid, ReconAuxiliaryPtr<TYPE, order> aux)
-    : GridDataBase{idx}, grid{grid}, recon_auxiliary{aux}, handle{grid->grid_handle, aux->poly_info_handle()} {
+    : GridDataBase{idx}, grid{grid}, recon_auxiliary{aux} {
 }
 
 template<typename TYPE, uint32_t order>
