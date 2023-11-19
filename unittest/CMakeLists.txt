@@ -5,7 +5,7 @@
 #  property of any third parties.
 
 # create sample app project
-project(sim-tests LANGUAGES C CXX)
+project(sim-tests LANGUAGES C CXX CUDA)
 
 set(SRC
         main.cpp

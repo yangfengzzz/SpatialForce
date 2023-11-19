@@ -47,4 +47,9 @@ void free_array(array_t<T> array) {
     array.data = nullptr;
 }
 
+template<typename T>
+void copy_array_d2h(array_t<T> array, std::vector<T> &src) {
+    memcpy_d2h(nullptr, src.data(), array.data, array.shape.size());
+}
+
 }// namespace wp
