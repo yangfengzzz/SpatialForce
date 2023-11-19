@@ -12,4 +12,6 @@ using namespace wp::fields;
 TEST(io, mes2D) {
     GmshMesh2D loader;
     loader.read_data("grids/2d/diagsquare.msh");
+    auto mesh = loader.create_mesh();
+    mesh.sync_h2d();
 }

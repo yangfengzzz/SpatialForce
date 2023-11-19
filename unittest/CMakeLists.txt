@@ -10,6 +10,7 @@ project(sim-tests LANGUAGES C CXX)
 set(SRC
         main.cpp
         io_tests.cpp
+        volume_integrator_tests.cu
 )
 
 add_executable(${PROJECT_NAME} ${SRC})

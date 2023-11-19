@@ -13,6 +13,9 @@
 
 namespace wp::fields {
 template<uint32_t DIM, uint32_t DOW>
+class IOMesh;
+
+template<uint32_t DIM, uint32_t DOW>
 class Mesh {
 public:
     static constexpr uint32_t dim = DIM;
@@ -75,6 +78,8 @@ public:
     }
 
 private:
+    friend class IOMesh<dim, dow>;
+
     /// Point array of the mesh.
     std::vector<point_t> pnt;
     /// Geometries arrays of the mesh.

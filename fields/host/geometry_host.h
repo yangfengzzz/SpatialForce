@@ -31,7 +31,7 @@ public:
 
     void sync_h2d();
 
-private:
+public:
     /// Index of the geometry.
     std::vector<int32_t> ind;
     /// Index of vertices.

@@ -8,6 +8,7 @@
 
 #include <vector>
 #include "core/vec.h"
+#include "host/mesh_host.h"
 
 namespace wp::fields {
 struct GeometryBM {
@@ -90,7 +91,7 @@ bool is_same(const GeometryBM &g0, const GeometryBM &g1);
  * required. Warning: to generate a mesh with internal data format will be really
  * time-consuming.
  */
-template<int DIM, int DOW = DIM>
+template<uint32_t DIM, uint32_t DOW = DIM>
 class IOMesh {
 public:
     using point_t = vec_t<DOW, float>;
@@ -121,6 +122,14 @@ public:
         std::vector<int> vertex;
     };
 
+public:
+    /// Default constructor.
+    IOMesh() = default;
+    /// Destructor.
+    virtual ~IOMesh() = default;
+
+    Mesh<DIM, DOW> create_mesh();
+
 protected:
     /// Point array of the mesh.
     std::vector<point_t> pnt;
@@ -131,13 +140,7 @@ protected:
     /// which is still an array. */
     std::vector<GeometryBM> geo[dim+1];
 
-public:
-    /// Default constructor.
-    IOMesh() = default;
-    /// Destructor.
-    virtual ~IOMesh() = default;
-
-public:
+protected:
     /// Number of points in the mesh.
     [[nodiscard]] inline int n_point() const { return pnt.size(); }
     /// Number of elements in the mesh.
