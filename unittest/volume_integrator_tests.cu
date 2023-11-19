@@ -41,8 +41,7 @@ private:
 TEST(VolumeIntegratorTest, 1D) {
     constexpr uint32_t dim = 1;
 
-    IOMesh1D loader;
-    loader.read_mesh(0, 1, 10);
+    IOMesh1D loader(0, 1, 100);
     auto mesh = loader.create_mesh();
     mesh.sync_h2d();
 
@@ -53,16 +52,15 @@ TEST(VolumeIntegratorTest, 1D) {
                      VolumeIntegratorFunctor<Interval>(mesh.handle, d_result));
 
     wp::copy_array_d2h(d_result, h_result);
-    for (int i = 0; i < mesh.n_geometry(2); i++) {
-        EXPECT_NEAR(h_result[i], 0.005, 1.0e-7);
+    for (int i = 0; i < mesh.n_geometry(dim); i++) {
+        EXPECT_NEAR(h_result[i], 0.01, 1.0e-7);
     }
 }
 
 TEST(VolumeIntegratorTest, 2D) {
     constexpr uint32_t dim = 2;
 
-    GmshMesh2D loader;
-    loader.read_data("grids/2d/diagsquare.msh");
+    GmshMesh2D loader("grids/2d/diagsquare.msh");
     auto mesh = loader.create_mesh();
     mesh.sync_h2d();
 
@@ -73,7 +71,7 @@ TEST(VolumeIntegratorTest, 2D) {
                      VolumeIntegratorFunctor<Triangle>(mesh.handle, d_result));
 
     wp::copy_array_d2h(d_result, h_result);
-    for (int i = 0; i < mesh.n_geometry(2); i++) {
+    for (int i = 0; i < mesh.n_geometry(dim); i++) {
         EXPECT_NEAR(h_result[i], 0.005, 1.0e-7);
     }
 }

@@ -17,13 +17,11 @@ namespace wp::fields {
         throw std::invalid_argument(message);                  \
     }
 
-GmshMesh2D::GmshMesh2D() = default;
-GmshMesh2D::~GmshMesh2D() = default;
-
-void GmshMesh2D::read_data(const std::string &filename) {
+GmshMesh2D::GmshMesh2D(const std::string &filename) {
     parse_gmsh(filename);
     generate_mesh();
 }
+GmshMesh2D::~GmshMesh2D() = default;
 
 void GmshMesh2D::parse_gmsh(const std::string &filename) {
     std::ifstream is(filename.c_str());

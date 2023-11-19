@@ -7,13 +7,13 @@
 #include "io_mesh_1d.h"
 
 namespace wp::fields {
-void IOMesh1D::read_mesh(float x0, float x1, uint32_t N) {
+IOMesh1D::IOMesh1D(float x0, float x1, uint32_t N) {
     uint32_t i = N + 1;
     float dx = (x1 - x0) / float(N);
 
     point().resize(i);
     for (int j = 0; j < i; j++)
-        point(j)[0] = x0 + float(i) * dx;
+        point(j)[0] = x0 + float(j) * dx;
 
     geometry(0).resize(i);
     boundaryMark(0, 0) = 1;

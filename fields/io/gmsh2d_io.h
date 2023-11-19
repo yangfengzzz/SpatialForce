@@ -12,21 +12,16 @@
 #include <string>
 
 namespace wp::fields {
-/**
- * This class provides facilities to assess the mesh data file generated
- * by the mesh generator \p{gmsh}. For 3-dimensional only. Though we can
- * read in very flexible data format, we currently only use it to read in
- * pure tetrahedron mesh.
- */
+/// This class provides facilities to assess the mesh data file generated
+/// by the mesh generator \p{gmsh}. For 3-dimensional only. Though we can
+/// read in very flexible data format, we currently only use it to read in
+/// pure tetrahedron mesh.
 class GmshMesh2D : public IOMesh<2, 2> {
 public:
     using base_template_geometry_t = base_template_geometry_t<Triangle>;
 
-    GmshMesh2D();
+    explicit GmshMesh2D(const std::string &);
     ~GmshMesh2D() override;
-
-public:
-    void read_data(const std::string &);
 
 private:
     void parse_gmsh(const std::string &);
