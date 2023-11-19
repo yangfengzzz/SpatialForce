@@ -43,6 +43,8 @@ set(HOST_FILES
 set(IO_FILES
         io/io_mesh.h
         io/io_mesh.cpp
+        io/io_mesh_1d.h
+        io/io_mesh_1d.cpp
         io/gmsh2d_io.h
         io/gmsh2d_io.cpp
 )

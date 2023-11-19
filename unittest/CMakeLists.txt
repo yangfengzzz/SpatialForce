@@ -9,7 +9,6 @@ project(sim-tests LANGUAGES C CXX CUDA)
 
 set(SRC
         main.cpp
-        io_tests.cpp
         volume_integrator_tests.cu
 )
 

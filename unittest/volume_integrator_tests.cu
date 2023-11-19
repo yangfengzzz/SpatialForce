@@ -5,6 +5,7 @@
 //  property of any third parties.
 
 #include <gtest/gtest.h>
+#include "fields/io/io_mesh_1d.h"
 #include "fields/io/gmsh2d_io.h"
 #include "fields/volume_integrator.h"
 #include <thrust/for_each.h>
@@ -12,15 +13,17 @@
 
 using namespace wp::fields;
 
-struct Functor {
-    CUDA_CALLABLE Functor(mesh_t<2, 2> mesh, wp::array_t<float> output)
+namespace {
+template<typename TYPE>
+struct VolumeIntegratorFunctor {
+    CUDA_CALLABLE VolumeIntegratorFunctor(const mesh_t<TYPE::dim, TYPE::dim> &mesh, wp::array_t<float> output)
         : output(output) {
         integrator.mesh = mesh;
     }
 
     struct IntegratorFunctor {
         using RETURN_TYPE = float;
-        CUDA_CALLABLE float operator()(wp::vec_t<2, float> pt) {
+        CUDA_CALLABLE float operator()(wp::vec_t<TYPE::dim, float> pt) {
             return 1.f;
         }
     };
@@ -31,10 +34,31 @@ struct Functor {
 
 private:
     wp::array_t<float> output;
-    VolumeIntegrator<Triangle, 2> integrator;
+    VolumeIntegrator<TYPE, 2> integrator;
 };
+}// namespace
 
-TEST(VolumeIntegrator2DTest, integrator) {
+TEST(VolumeIntegratorTest, 1D) {
+    constexpr uint32_t dim = 1;
+
+    IOMesh1D loader;
+    loader.read_mesh(0, 1, 10);
+    auto mesh = loader.create_mesh();
+    mesh.sync_h2d();
+
+    std::vector<float> h_result(mesh.n_geometry(dim));
+    auto d_result = wp::alloc_array(h_result);
+    thrust::for_each(thrust::counting_iterator<size_t>(0),
+                     thrust::counting_iterator<size_t>(mesh.n_geometry(dim)),
+                     VolumeIntegratorFunctor<Interval>(mesh.handle, d_result));
+
+    wp::copy_array_d2h(d_result, h_result);
+    for (int i = 0; i < mesh.n_geometry(2); i++) {
+        EXPECT_NEAR(h_result[i], 0.005, 1.0e-7);
+    }
+}
+
+TEST(VolumeIntegratorTest, 2D) {
     constexpr uint32_t dim = 2;
 
     GmshMesh2D loader;
@@ -46,8 +70,8 @@ TEST(VolumeIntegrator2DTest, integrator) {
     auto d_result = wp::alloc_array(h_result);
     thrust::for_each(thrust::counting_iterator<size_t>(0),
                      thrust::counting_iterator<size_t>(mesh.n_geometry(dim)),
-                     Functor(mesh.handle, d_result));
-    
+                     VolumeIntegratorFunctor<Triangle>(mesh.handle, d_result));
+
     wp::copy_array_d2h(d_result, h_result);
     for (int i = 0; i < mesh.n_geometry(2); i++) {
         EXPECT_NEAR(h_result[i], 0.005, 1.0e-7);
