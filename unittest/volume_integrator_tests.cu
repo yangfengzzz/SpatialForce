@@ -44,11 +44,12 @@ TEST(VolumeIntegrator2DTest, integrator) {
 
     std::vector<float> h_result(mesh.n_geometry(dim));
     auto d_result = wp::alloc_array(h_result);
-    thrust::for_each(thrust::counting_iterator<size_t>(0), thrust::counting_iterator<size_t>(0) + mesh.n_geometry(dim),
+    thrust::for_each(thrust::counting_iterator<size_t>(0),
+                     thrust::counting_iterator<size_t>(mesh.n_geometry(dim)),
                      Functor(mesh.handle, d_result));
     
     wp::copy_array_d2h(d_result, h_result);
     for (int i = 0; i < mesh.n_geometry(2); i++) {
-        EXPECT_NEAR(h_result[i], 0.005, 1.0e-13);
+        EXPECT_NEAR(h_result[i], 0.005, 1.0e-7);
     }
 }

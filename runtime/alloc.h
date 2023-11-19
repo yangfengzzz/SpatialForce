@@ -49,7 +49,8 @@ void free_array(array_t<T> array) {
 
 template<typename T>
 void copy_array_d2h(array_t<T> array, std::vector<T> &src) {
-    memcpy_d2h(nullptr, src.data(), array.data, array.shape.size());
+    auto count = sizeof(T) * src.size();
+    memcpy_d2h(nullptr, src.data(), array.data, count);
 }
 
 }// namespace wp
