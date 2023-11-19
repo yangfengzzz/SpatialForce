@@ -82,7 +82,7 @@ struct GeometryBM {
 bool is_same(const GeometryBM &g0, const GeometryBM &g1);
 
 /**
- * Simplest mesh is a kind of mesh with only the points coordinate and the element
+ * IO mesh is a kind of mesh with only the points coordinate and the element
  * geometry information. Some grid generation program provide such kind of data format.
  * This class provides facilities to generate a mesh with internal data format from a
  * simplest mesh. This class will be helpful when the data provided by grid generation
@@ -91,7 +91,7 @@ bool is_same(const GeometryBM &g0, const GeometryBM &g1);
  * time-consuming.
  */
 template<int DIM, int DOW = DIM>
-class SimplestMesh {
+class IOMesh {
 public:
     using point_t = vec_t<DOW, float>;
     static constexpr uint32_t dim = DIM;
@@ -129,13 +129,13 @@ protected:
     /// Geometries arrays of the mesh.
     /// The geometries in \p n dimension are in the \p n-th entry of the array,
     /// which is still an array. */
-    std::vector<std::vector<GeometryBM>> geo;
+    std::vector<GeometryBM> geo[dim+1];
 
 public:
     /// Default constructor.
-    SimplestMesh() = default;
+    IOMesh() = default;
     /// Destructor.
-    virtual ~SimplestMesh() = default;
+    virtual ~IOMesh() = default;
 
 public:
     /// Number of points in the mesh.
@@ -154,14 +154,6 @@ public:
     /// Number of geometries in certain dimension.
     [[nodiscard]] inline int n_geometry(int n) const {
         return geo[n].size();
-    }
-    /// Geometries arrays.
-    [[nodiscard]] inline const std::vector<std::vector<GeometryBM>> &geometry() const {
-        return geo;
-    }
-    /// Geometries arrays.
-    inline std::vector<std::vector<GeometryBM>> &geometry() {
-        return geo;
     }
     /// Geometries array in certain dimension.
     [[nodiscard]] inline const std::vector<GeometryBM> &geometry(int n) const {

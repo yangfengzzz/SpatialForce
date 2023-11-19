@@ -21,6 +21,11 @@ GmshMesh2D::GmshMesh2D() = default;
 GmshMesh2D::~GmshMesh2D() = default;
 
 void GmshMesh2D::read_data(const std::string &filename) {
+    parse_gmsh(filename);
+    generate_mesh();
+}
+
+void GmshMesh2D::parse_gmsh(const std::string &filename) {
     std::ifstream is(filename.c_str());
     std::cerr << "Reading in gmsh data ..." << std::endl;
 
@@ -399,6 +404,7 @@ void GmshMesh2D::read_data(const std::string &filename) {
                             is >> node_index;
                             ele[global_surf].vertex[l] = vertex_indices[node_index];
                         }
+                        global_surf++;
                         break;
                     default:
                         THROW_INVALID_ARG_WITH_MESSAGE_IF(true, "Unsupported such type of element")
@@ -414,8 +420,6 @@ void GmshMesh2D::read_data(const std::string &filename) {
     static const std::string end_elements_marker[] = {"$ENDELM", "$EndElements"};
     THROW_INVALID_ARG_WITH_MESSAGE_IF(line != end_elements_marker[gmsh_file_format == 10 ? 0 : 1],
                                       "Have some problem in Gmsh files")
-
-    generate_mesh();
 }
 
 void GmshMesh2D::base_generate_mesh() {

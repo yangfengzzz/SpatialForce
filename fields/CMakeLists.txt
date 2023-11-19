@@ -41,8 +41,8 @@ set(HOST_FILES
 )
 
 set(IO_FILES
-        io/simplest_mesh.h
-        io/simplest_mesh.cpp
+        io/io_mesh.h
+        io/io_mesh.cpp
         io/gmsh2d_io.h
         io/gmsh2d_io.cpp
 )

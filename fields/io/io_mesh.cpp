@@ -4,7 +4,7 @@
 //  personal capacity and am not conveying any rights to any intellectual
 //  property of any third parties.
 
-#include "simplest_mesh.h"
+#include "io_mesh.h"
 
 namespace wp::fields {
 bool is_same(const GeometryBM &g0, const GeometryBM &g1) {
@@ -24,15 +24,15 @@ bool is_same(const GeometryBM &g0, const GeometryBM &g1) {
     return true;
 }
 
-template class SimplestMesh<1, 1>;
-template class SimplestMesh<2, 1>;
-template class SimplestMesh<3, 1>;
+template class IOMesh<1, 1>;
+template class IOMesh<2, 1>;
+template class IOMesh<3, 1>;
 
-template class SimplestMesh<1, 2>;
-template class SimplestMesh<2, 2>;
-template class SimplestMesh<3, 2>;
+template class IOMesh<1, 2>;
+template class IOMesh<2, 2>;
+template class IOMesh<3, 2>;
 
-template class SimplestMesh<1, 3>;
-template class SimplestMesh<2, 3>;
-template class SimplestMesh<3, 3>;
+template class IOMesh<1, 3>;
+template class IOMesh<2, 3>;
+template class IOMesh<3, 3>;
 }// namespace wp::fields

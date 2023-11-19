@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "simplest_mesh.h"
+#include "io_mesh.h"
 #include "../template_geometry.h"
 #include <list>
 #include <string>
@@ -18,7 +18,7 @@ namespace wp::fields {
  * read in very flexible data format, we currently only use it to read in
  * pure tetrahedron mesh.
  */
-class GmshMesh2D : public SimplestMesh<2, 2> {
+class GmshMesh2D : public IOMesh<2, 2> {
 public:
     using base_template_geometry_t = base_template_geometry_t<Triangle>;
 
@@ -29,8 +29,8 @@ public:
     void read_data(const std::string &);
 
 private:
+    void parse_gmsh(const std::string &);
     void base_generate_mesh();
-
     void generate_mesh();
 
     std::list<GeometryBM> nodes;
